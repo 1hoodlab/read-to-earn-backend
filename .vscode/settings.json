@@ -1,0 +1,24 @@
+{
+    "files.exclude": {
+      "**/package-lock.json": false,
+      "**/yarn.lock": false,
+      "**/dist/": true
+    },
+    "search.exclude": {
+      "**/dist/": true,
+  
+      "**/yarn.lock": true,
+      "**/package-lock.json": true,
+      "**/pnpm-lock.yaml": true,
+      "**/node_modules": true
+    },
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
+    "[prisma]": {
+      "editor.defaultFormatter": "Prisma.prisma"
+    }
+  }
+  

@@ -1,0 +1,40 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table user {
+  id String [pk, unique]
+  username String [not null]
+  password String [not null]
+  avatar String
+  email String [not null]
+  first_name String
+  last_name String
+  token_expiry_date DateTime
+  verify_email_token String
+  reset_password_token String
+  auth_email_google String [unique]
+  auth_metamask_wallet String [unique]
+  time_send_token DateTime
+  role Role [not null, default: 'reader']
+  stars Int [not null, default: 0]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime
+  user_token user_token
+}
+
+Table user_token {
+  id Int [pk, increment]
+  refresh_token String
+  refresh_token_times Int
+  access_token String [not null]
+  user_id String [unique, not null]
+  user user [not null]
+}
+
+Enum Role {
+  writer
+  reader
+}
+
+Ref: user_token.user_id - user.id
