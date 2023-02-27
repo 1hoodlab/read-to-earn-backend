@@ -21,6 +21,7 @@ Table user {
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime
   user_token user_token
+  news news [not null]
 }
 
 Table user_token {
@@ -32,9 +33,69 @@ Table user_token {
   user user [not null]
 }
 
+Table news {
+  id Int [pk, increment]
+  title String [not null]
+  content_url String [not null]
+  cid String [unique, not null]
+  total_supply String
+  author user [not null]
+  author_id String [not null]
+  categories_on_news categories_on_news [not null]
+  tags_on_news tags_on_news [not null]
+}
+
+Table categories_on_news {
+  news news [not null]
+  news_id Int [not null]
+  category category [not null]
+  category_id Int [not null]
+  assigned_at DateTime [default: `now()`, not null]
+
+  indexes {
+    (news_id, category_id) [pk]
+  }
+}
+
+Table tags_on_news {
+  news news [not null]
+  news_id Int [not null]
+  tag tag [not null]
+  tag_id Int [not null]
+  assigned_at DateTime [default: `now()`, not null]
+
+  indexes {
+    (news_id, tag_id) [pk]
+  }
+}
+
+Table category {
+  id Int [pk, increment]
+  name String [unique, not null]
+  categories_on_news categories_on_news [not null]
+}
+
+Table tag {
+  id Int [pk, increment]
+  name String [not null]
+  link String [not null]
+  tags_on_news tags_on_news [not null]
+}
+
 Enum Role {
   writer
   reader
+  root
 }
 
 Ref: user_token.user_id - user.id
+
+Ref: news.author_id > user.id
+
+Ref: categories_on_news.news_id > news.id
+
+Ref: categories_on_news.category_id > category.id
+
+Ref: tags_on_news.news_id > news.id
+
+Ref: tags_on_news.tag_id > tag.id

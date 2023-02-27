@@ -98,4 +98,5 @@ model tag {
 enum Role {
     writer
     reader
+    root
 }
