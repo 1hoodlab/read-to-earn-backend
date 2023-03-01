@@ -50,12 +50,12 @@ model user_token {
 }
 
 model news {
-    id           Int     @id @default(autoincrement())
-    title        String
-    content_url  String
-    cid          String  @unique
-    total_supply String?
-
+    id                 Int                  @id @default(autoincrement())
+    title              String
+    content_url        String
+    cid                String               @unique
+    total_supply       String?
+    min_read           Int //  seconds
     author             user                 @relation(fields: [author_id], references: [id])
     author_id          String
     categories_on_news categories_on_news[]
