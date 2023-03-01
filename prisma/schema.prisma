@@ -15,25 +15,27 @@ generator dbml {
 }
 
 model user {
-    id                   String      @id @unique @default(uuid())
+    id                   String            @id @unique @default(uuid())
     username             String
     password             String
     avatar               String?
     email                String
     first_name           String?
     last_name            String?
-    token_expiry_date    DateTime?   @db.Timestamp(6)
-    verify_email_token   String?     @db.VarChar
-    reset_password_token String?     @db.VarChar
-    auth_email_google    String?     @unique @db.VarChar // login with google will save for here
-    auth_metamask_wallet String?     @unique @db.VarChar // login with metamask - feature for web3
-    time_send_token      DateTime?   @db.Timestamp(6) // set time for token and check resend token after 5 minutes
-    role                 Role        @default(reader)
-    stars                Int         @default(0)
-    created_at           DateTime    @default(now())
-    updated_at           DateTime?   @updatedAt @db.Timestamp(6)
+    token_expiry_date    DateTime?         @db.Timestamp(6)
+    verify_email_token   String?           @db.VarChar
+    reset_password_token String?           @db.VarChar
+    auth_email_google    String?           @unique @db.VarChar // login with google will save for here
+    auth_metamask_wallet String?           @unique @db.VarChar // login with metamask - feature for web3
+    time_send_token      DateTime?         @db.Timestamp(6) // set time for token and check resend token after 5 minutes
+    role                 Role              @default(reader)
+    stars                Int               @default(0)
+    created_at           DateTime          @default(now())
+    updated_at           DateTime?         @updatedAt @db.Timestamp(6)
+    nonce_for_earn       Int
     user_token           user_token?
     news                 news[]
+    user_claim_news      user_claim_news[]
 }
 
 model user_token {
@@ -58,6 +60,7 @@ model news {
     author_id          String
     categories_on_news categories_on_news[]
     tags_on_news       tags_on_news[]
+    user_claim_news    user_claim_news[]
 }
 
 model categories_on_news {
@@ -69,6 +72,18 @@ model categories_on_news {
     assigned_at DateTime @default(now())
 
     @@id([news_id, category_id])
+}
+
+model user_claim_news {
+    news           news     @relation(fields: [news_id], references: [id])
+    news_id        Int
+    user           user     @relation(fields: [user_id], references: [id])
+    user_id        String
+    transaction_id String
+    token_earned   String
+    created_at     DateTime @default(now())
+
+    @@id([news_id, user_id])
 }
 
 model tags_on_news {
