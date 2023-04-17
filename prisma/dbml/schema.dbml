@@ -20,8 +20,11 @@ Table user {
   stars Int [not null, default: 0]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime
+  nonce_for_earn Int [default: 0]
+  nonce_auth_metamask Int [default: 0]
   user_token user_token
   news news [not null]
+  user_claim_news user_claim_news [not null]
 }
 
 Table user_token {
@@ -39,10 +42,12 @@ Table news {
   content_url String [not null]
   cid String [unique, not null]
   total_supply String
+  min_read Int [not null]
   author user [not null]
   author_id String [not null]
   categories_on_news categories_on_news [not null]
   tags_on_news tags_on_news [not null]
+  user_claim_news user_claim_news [not null]
 }
 
 Table categories_on_news {
@@ -54,6 +59,20 @@ Table categories_on_news {
 
   indexes {
     (news_id, category_id) [pk]
+  }
+}
+
+Table user_claim_news {
+  news news [not null]
+  news_id Int [not null]
+  user user [not null]
+  user_id String [not null]
+  transaction_id String [not null]
+  token_earned String [not null]
+  created_at DateTime [default: `now()`, not null]
+
+  indexes {
+    (news_id, user_id) [pk]
   }
 }
 
@@ -95,6 +114,10 @@ Ref: news.author_id > user.id
 Ref: categories_on_news.news_id > news.id
 
 Ref: categories_on_news.category_id > category.id
+
+Ref: user_claim_news.news_id > news.id
+
+Ref: user_claim_news.user_id > user.id
 
 Ref: tags_on_news.news_id > news.id
 
