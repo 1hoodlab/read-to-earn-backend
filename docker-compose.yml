@@ -5,12 +5,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: always
     ports:
-      - 3000:3000
+      - 8080:8080
     depends_on:
       - postgres
     env_file:
       - .env
+    networks:
+      - postgres
 
   postgres:
     image: postgres:latest
@@ -26,3 +29,7 @@ services:
 volumes:
   postgres:
     name: spirity-db
+
+networks:
+  postgres:
+    driver: bridge
