@@ -1,0 +1,1 @@
+export const nft_storage_token = process.env.NFT_STORAGE_TOKEN as string;

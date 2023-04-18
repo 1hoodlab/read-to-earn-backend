@@ -9,6 +9,8 @@ import helmet from 'helmet';
 import type { NestConfig, SwaggerConfig } from '../src/common/config/config.interface';
 import { AllExceptionsFilter } from './common/exception/all-exception.filter';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import  {contentParser} from "fastify-multer"
+
 import { join } from 'path';
 
 async function bootstrap() {
@@ -92,7 +94,7 @@ async function bootstrap() {
   });
 
   app.register(fastifyCookie);
-
+  app.register(contentParser);
   app.setViewEngine({
     engine: {
       handlebars: require('handlebars'),
