@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { GatewayModule } from './modules/gateway/gateway.module';
+import { NftStorageModule } from './modules/nft-storage/nft-storage.module';
 import config from './common/config/config';
 
 @Module({
@@ -23,6 +24,7 @@ import config from './common/config/config';
     UserModule,
     AuthModule,
     GatewayModule,
+    NftStorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
