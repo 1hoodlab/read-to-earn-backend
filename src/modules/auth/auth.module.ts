@@ -8,6 +8,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { AuthService } from './services/auth.service';
 import { PasswordService } from './services/password.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { GoogleAuthenticationService } from './services/google-auth.service';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
   ],
   providers: [
     AuthService,
-    // GoogleAuthSerivce,
+    GoogleAuthenticationService,
     PasswordService,
     JwtStrategy,
     JwtAuthGuard,

@@ -59,6 +59,17 @@ export class AuthService {
     });
   }
 
+  async createUserDefault(email: string): Promise<user> {
+    return this.prisma.user.create({
+      data: {
+        username: email, // TODO: update username = email + randomString();
+        email: email,
+        auth_email_google: email,
+        password: await this.passwordService.hashPassword('12345678'),
+      },
+    });
+  }
+
   findUserById(userId: string): Promise<user> {
     return this.prisma.user.findFirst({
       where: {

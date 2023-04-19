@@ -45,3 +45,9 @@ export class SignUpDto {
   @IsString()
   password: string;
 }
+
+export class GoogleTokenDto {
+  @ApiProperty()
+  @IsString()
+  token: string;
+}
