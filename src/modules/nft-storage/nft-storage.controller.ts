@@ -1,14 +1,14 @@
-import { Body, Controller, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { markdownFilter } from './util';
-import { SingleFileDto } from './dto/single-file.dto';
+import { GetContentDto, SingleFileDto } from './dto/index.dto';
 import { FastifyFileInterceptor } from 'src/interceptor/fastify-file-interceptor';
 import { NftStorageService } from './nft-storage.service';
 import { UPLOAD_FIELD } from './constants';
 import { CIDString } from 'nft.storage';
 
 @Controller('nft-storage')
-@ApiTags('Upload')
+@ApiTags('Nft.Storage')
 export class NftStorageController {
   constructor(private readonly nftStorageService: NftStorageService) {}
   @ApiConsumes('multipart/form-data')
@@ -18,4 +18,7 @@ export class NftStorageController {
     const someData = new Blob([file.buffer]);
     return await this.nftStorageService.storeMardownFile(someData);
   }
+
+  @Get('content')
+  async getContent(@Body() cid: GetContentDto) {}
 }
