@@ -14,7 +14,7 @@ export class NftStorageController {
   @ApiConsumes('multipart/form-data')
   @Post('news')
   @UseInterceptors(FastifyFileInterceptor(UPLOAD_FIELD, { fileFilter: markdownFilter }))
-  async uploadBlogContent(@Req() req: Request, @UploadedFile() file: Express.Multer.File, @Body() body: SingleFileDto): Promise<CIDString> {
+  async uploadBlogContent(@UploadedFile() file: Express.Multer.File, @Body() body: SingleFileDto): Promise<CIDString> {
     const someData = new Blob([file.buffer]);
     return await this.nftStorageService.storeMardownFile(someData);
   }

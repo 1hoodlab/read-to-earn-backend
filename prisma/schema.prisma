@@ -25,6 +25,7 @@ model user {
     token_expiry_date    DateTime?         @db.Timestamp(6)
     verify_email_token   String?           @db.VarChar
     reset_password_token String?           @db.VarChar
+    wallet_address       String?           @db.VarChar //link account email - wallet address
     auth_email_google    String?           @unique @db.VarChar // login with google will save for here
     auth_metamask_wallet String?           @unique @db.VarChar // login with metamask - feature for web3
     time_send_token      DateTime?         @db.Timestamp(6) // set time for token and check resend token after 5 minutes
@@ -52,10 +53,14 @@ model user_token {
 
 model news {
     id                 Int                  @id @default(autoincrement())
+    token_id           Int //as token_id on blockchain 
     title              String
-    content_url        String
+    slug               String
+    thumbnail          String // save using base64 encode
+    content_url        String // cid + nft.storage url
     cid                String               @unique
     total_supply       String?
+    payment_token      Int?
     min_read           Int //  seconds
     author             user                 @relation(fields: [author_id], references: [id])
     author_id          String

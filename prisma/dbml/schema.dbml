@@ -13,6 +13,7 @@ Table user {
   token_expiry_date DateTime
   verify_email_token String
   reset_password_token String
+  wallet_address String
   auth_email_google String [unique]
   auth_metamask_wallet String [unique]
   time_send_token DateTime
@@ -38,10 +39,14 @@ Table user_token {
 
 Table news {
   id Int [pk, increment]
+  token_id Int [unique, not null]
   title String [not null]
+  slug String [not null]
+  thumbnail String [not null]
   content_url String [not null]
   cid String [unique, not null]
   total_supply String
+  payment_token Int
   min_read Int [not null]
   author user [not null]
   author_id String [not null]
