@@ -5,3 +5,8 @@ export class SingleFileDto {
   @ApiProperty({ type: 'string', format: 'binary' })
   markdown_file: string;
 }
+
+export class GetContentDto {
+  @ApiProperty({ type: 'string' })
+  cid: string;
+}

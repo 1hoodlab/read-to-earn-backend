@@ -1,3 +1,4 @@
+
 export interface PaginatedResult<T> {
   data: T[];
   pagination: IPagination;
@@ -29,7 +30,7 @@ export type PaginateFunction = <T, K>(model: any, args?: K, options?: PaginateOp
 export const createPaginator = (defaultOptions: PaginateOptions): PaginateFunction => {
   return async (model, args: any = { where: undefined }, options) => {
     const page = Number(options?.page || defaultOptions?.page) || 1;
-    const perPage = Number(options?.perPage || defaultOptions?.perPage) || 10;
+    const perPage = Number(options?.perPage || defaultOptions?.perPage) || 10; // number elements per page
 
     const skip = page > 0 ? perPage * (page - 1) : 0;
     const [total, data] = await Promise.all([
