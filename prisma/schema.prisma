@@ -64,6 +64,8 @@ model news {
     min_read           Int //  seconds
     author             user                 @relation(fields: [author_id], references: [id])
     author_id          String
+    published          Boolean              @default(true)
+    created_at         DateTime             @default(now())
     categories_on_news categories_on_news[]
     tags_on_news       tags_on_news[]
     user_claim_news    user_claim_news[]

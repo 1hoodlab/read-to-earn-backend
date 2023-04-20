@@ -1,3 +1,4 @@
+
 export interface PaginatedResult<T> {
   data: T[];
   pagination: IPagination;

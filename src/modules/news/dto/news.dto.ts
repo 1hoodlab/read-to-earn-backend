@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateNewsInputDto {
   @ApiProperty()
@@ -30,4 +30,18 @@ export class CreateNewsInputDto {
 
   @ApiProperty()
   payment_token: number;
+}
+
+export class GetNewsAll {
+  @ApiProperty({ default: 1 })
+  @IsOptional()
+  page: number
+
+  @ApiProperty({ default: 10 })
+  @IsOptional()
+  perPage: number
+
+  @ApiProperty({ default: '', required: false })
+  @IsOptional()
+  keyword: string
 }

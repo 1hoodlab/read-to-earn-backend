@@ -50,6 +50,8 @@ Table news {
   min_read Int [not null]
   author user [not null]
   author_id String [not null]
+  published Boolean [not null, default: true]
+  created_at DateTime [default: `now()`, not null]
   categories_on_news categories_on_news [not null]
   tags_on_news tags_on_news [not null]
   user_claim_news user_claim_news [not null]

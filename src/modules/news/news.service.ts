@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'nestjs-prisma';
+import { PrismaModule, PrismaService } from 'nestjs-prisma';
 import { CreateNewsInputDto } from './dto/news.dto';
-import { user } from '@prisma/client';
+import { Prisma, user } from '@prisma/client';
+import { createPaginator } from 'src/_serivces/pagination.service';
 
 @Injectable()
 export class NewsService {
@@ -19,5 +20,36 @@ export class NewsService {
         },
       },
     });
+  }
+
+  findNews(slug: string) {
+    return this.prismaService.news.findFirst({
+      where: {
+        slug: slug,
+      },
+    });
+  }
+
+  getNewsAll({ page, perPage, keyword }: { page: number; perPage: number; keyword?: string }) {
+    const paginate = createPaginator({ perPage });
+    console.log(page, perPage);
+    return paginate<any, Prisma.NewsAggregateArgs>(
+      this.prismaService.news,
+      {
+        where: {
+          title: {
+            contains: keyword,
+            mode: 'insensitive',
+          },
+          published: true,
+        },
+        orderBy: {
+          created_at: 'desc',
+        },
+      },
+      {
+        page: page,
+      },
+    );
   }
 }
