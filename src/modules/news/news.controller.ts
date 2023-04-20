@@ -49,6 +49,9 @@ export class NewsController {
     return await this.newsService.getNewsAll({ page, perPage, keyword });
   }
 
+  // BE của nextJS sẽ gọi API create-claim và truyền vào slug và token của người dùng
+  // BE của nextJS có nhiệm vụ tracking việc đọc của người dùng nếu hoàn thành nhiệm vụ thì gọi create-claim
+
   @Post('create-claim')
   @Roles([Role.root])
   async createUserClaimNews(@Body() body: CreateUserClaimNewsDto) {
