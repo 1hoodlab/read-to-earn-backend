@@ -51,6 +51,14 @@ export class ClaimToken {
   news_id: number;
 }
 
+export class CreateUserClaimNewsDto {
+  @ApiProperty()
+  slug: string;
+
+  @ApiProperty()
+  access_token: string;
+}
+
 export type ClaimTokenResponse = {
   transaction_id: string;
   v: number;

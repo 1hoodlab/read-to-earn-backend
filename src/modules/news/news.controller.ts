@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpException, Param, Post, Query } from '@nestj
 import { ApiTags } from '@nestjs/swagger';
 import { ClaimStatus, Role, news, user } from '@prisma/client';
 import { Roles } from 'src/decorators/roles.decorator';
-import { ClaimToken, CreateNewsInputDto, GetNewsAll } from './dto/news.dto';
+import { ClaimToken, CreateNewsInputDto, CreateUserClaimNewsDto, GetNewsAll } from './dto/news.dto';
 import { NewsService } from './news.service';
 import { NftStorageService } from '../nft-storage/nft-storage.service';
 import { wordsReadTime } from 'src/_serivces/util.service';
@@ -12,6 +12,7 @@ import { PaginatedResult } from 'src/_serivces/pagination.service';
 import { SNEWS_CONTRACT_ADDRESS } from 'src/constant';
 import { MessageType, OnchainService } from '../onchain/onchain.service';
 import { TypedDataDomain, ethers } from 'ethers';
+import { AuthService } from '../auth/services/auth.service';
 
 @Controller('news')
 @ApiTags('News')
@@ -20,6 +21,7 @@ export class NewsController {
     private readonly newsService: NewsService,
     private readonly nftStorageService: NftStorageService,
     private readonly onchainService: OnchainService,
+    private readonly authService: AuthService,
   ) {}
 
   @Post('create')
@@ -47,7 +49,20 @@ export class NewsController {
     return await this.newsService.getNewsAll({ page, perPage, keyword });
   }
 
-  @Post('/claim')
+  @Post('create-claim')
+  @Roles([Role.root])
+  async createUserClaimNews(@Body() body: CreateUserClaimNewsDto) {
+    const user = await this.authService.getUserFromToken(body.access_token);
+    const news = await this.newsService.findNewsBySlug(body.slug);
+
+    const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, news.id);
+    if (userClaimNews) throw new HttpException('User Claim News is Exist!', 400);
+
+    const transaction_id = '123'; // TODO: create random transaction via transaction#<user_id>_<news_id>_<random string>
+    return await this.newsService.createUserClaimNews(transaction_id, user.id, news.id);
+  }
+
+  @Post('claim')
   async claimToken(@User() user: user, @Body() body: ClaimToken): Promise<any> {
     if (!user.wallet_address) throw new HttpException('Please link wallet!', 400);
 

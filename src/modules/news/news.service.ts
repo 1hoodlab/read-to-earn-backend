@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaModule, PrismaService } from 'nestjs-prisma';
 import { CreateNewsInputDto } from './dto/news.dto';
-import { ClaimStatus, Prisma, user } from '@prisma/client';
+import { ClaimStatus, Prisma, news, user } from '@prisma/client';
 import { createPaginator } from 'src/_serivces/pagination.service';
 
 @Injectable()
@@ -77,6 +77,25 @@ export class NewsService {
       where: {
         user_id: user_id,
         status: ClaimStatus.success,
+      },
+    });
+  }
+
+  createUserClaimNews(transaction_id: string, user_id: string, news_id: number) {
+    return this.prismaService.user_claim_news.create({
+      data: {
+        news: {
+          connect: {
+            id: news_id,
+          },
+        },
+        user: {
+          connect: {
+            id: user_id,
+          },
+        },
+        transaction_id: transaction_id,
+        token_earned: '0',
       },
     });
   }
