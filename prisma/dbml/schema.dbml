@@ -39,7 +39,7 @@ Table user_token {
 
 Table news {
   id Int [pk, increment]
-  token_id Int [unique, not null]
+  token_id Int [not null]
   title String [not null]
   slug String [not null]
   thumbnail String [not null]

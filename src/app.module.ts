@@ -11,6 +11,7 @@ import { NewsModule } from './modules/news/news.module';
 import config from './common/config/config';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './modules/auth/guards/role.guard';
+import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -33,6 +34,10 @@ import { RolesGuard } from './modules/auth/guards/role.guard';
   controllers: [AppController],
   providers: [
     AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
     {
       provide: APP_GUARD,
       useClass: RolesGuard,

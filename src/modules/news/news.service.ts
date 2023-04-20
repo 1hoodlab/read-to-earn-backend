@@ -8,7 +8,7 @@ export class NewsService {
   constructor(private readonly prismaService: PrismaService) {}
 
   createNews(news: CreateNewsInputDto, minRead: number, author: user) {
-    this.prismaService.news.create({
+    return this.prismaService.news.create({
       data: {
         ...news,
         min_read: minRead,
