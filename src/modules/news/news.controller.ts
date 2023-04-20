@@ -37,7 +37,6 @@ export class NewsController {
   @Get('/all')
   async getNewsAll(@Query() query: GetNewsAll): Promise<PaginatedResult<any>> {
     const { page, perPage, keyword = '' } = query;
-    console.log(query);
     return await this.newsService.getNewsAll({ page, perPage, keyword });
   }
 }

@@ -31,8 +31,9 @@ export class NewsService {
   }
 
   getNewsAll({ page, perPage, keyword }: { page: number; perPage: number; keyword?: string }) {
+    
     const paginate = createPaginator({ perPage });
-    console.log(page, perPage);
+
     return paginate<any, Prisma.NewsAggregateArgs>(
       this.prismaService.news,
       {
