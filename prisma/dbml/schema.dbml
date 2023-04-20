@@ -76,6 +76,7 @@ Table user_claim_news {
   user_id String [not null]
   transaction_id String [not null]
   token_earned String [not null]
+  status ClaimStatus [not null, default: 'pending']
   created_at DateTime [default: `now()`, not null]
 
   indexes {
@@ -112,6 +113,12 @@ Enum Role {
   writer
   reader
   root
+}
+
+Enum ClaimStatus {
+  pending
+  success
+  failure
 }
 
 Ref: user_token.user_id - user.id

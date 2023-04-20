@@ -12,6 +12,7 @@ import config from './common/config/config';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './modules/auth/guards/role.guard';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
+import { OnchainModule } from './modules/onchain/onchain.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
     GatewayModule,
     NftStorageModule,
     NewsModule,
+    OnchainModule,
   ],
   controllers: [AppController],
   providers: [

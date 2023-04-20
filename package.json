@@ -66,6 +66,7 @@
     "class-validator": "^0.14.0",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.7",
+    "ethers": "^5.7.2",
     "fastify-multer": "^2.0.3",
     "googleapis": "^118.0.0",
     "handlebars": "^4.7.7",

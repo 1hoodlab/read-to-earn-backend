@@ -35,13 +35,26 @@ export class CreateNewsInputDto {
 export class GetNewsAll {
   @ApiProperty({ default: 1 })
   @IsOptional()
-  page: number
+  page: number;
 
   @ApiProperty({ default: 10 })
   @IsOptional()
-  perPage: number
+  perPage: number;
 
   @ApiProperty({ default: '', required: false })
   @IsOptional()
-  keyword: string
+  keyword: string;
 }
+
+export class ClaimToken {
+  @ApiProperty()
+  news_id: number;
+}
+
+export type ClaimTokenResponse = {
+  transaction_id: string;
+  v: number;
+  r: string;
+  s: string;
+  slug: string;
+};

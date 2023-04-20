@@ -81,15 +81,19 @@ model categories_on_news {
 
     @@id([news_id, category_id])
 }
+// khi người dùng thỏa mãn điều kiện
+// ngay lúc đo hệ thống sẽ subcribe và tự động tạo một record trong bảng user_claim_token với status pending
+// người dùng claim thông qua sign của backend và gửi lại event về cho BE để BE cập nhật lại status success hay failure
 
 model user_claim_news {
-    news           news     @relation(fields: [news_id], references: [id])
+    news           news        @relation(fields: [news_id], references: [id])
     news_id        Int
-    user           user     @relation(fields: [user_id], references: [id])
+    user           user        @relation(fields: [user_id], references: [id])
     user_id        String
     transaction_id String
     token_earned   String
-    created_at     DateTime @default(now())
+    status         ClaimStatus @default(pending)
+    created_at     DateTime    @default(now())
 
     @@id([news_id, user_id])
 }
@@ -122,4 +126,10 @@ enum Role {
     writer
     reader
     root
+}
+
+enum ClaimStatus {
+    pending
+    success
+    failure
 }

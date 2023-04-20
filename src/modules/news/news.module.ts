@@ -4,9 +4,10 @@ import { NewsController } from './news.controller';
 import { NftStorageService } from '../nft-storage/nft-storage.service';
 import { HttpService } from '@nestjs/axios';
 import { NftStorageModule } from '../nft-storage/nft-storage.module';
+import { OnchainModule } from '../onchain/onchain.module';
 
 @Module({
-  imports: [NftStorageModule],
+  imports: [NftStorageModule, OnchainModule],
   providers: [NewsService],
   controllers: [NewsController],
 })

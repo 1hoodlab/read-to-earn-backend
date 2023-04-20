@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaModule, PrismaService } from 'nestjs-prisma';
 import { CreateNewsInputDto } from './dto/news.dto';
-import { Prisma, user } from '@prisma/client';
+import { ClaimStatus, Prisma, user } from '@prisma/client';
 import { createPaginator } from 'src/_serivces/pagination.service';
 
 @Injectable()
@@ -22,16 +22,23 @@ export class NewsService {
     });
   }
 
-  findNews(slug: string) {
+  findNewsById(id: number) {
+    return this.prismaService.news.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
+
+  findNewsBySlug(slug: string) {
     return this.prismaService.news.findFirst({
       where: {
-        slug: slug,
+        slug,
       },
     });
   }
 
   getNewsAll({ page, perPage, keyword }: { page: number; perPage: number; keyword?: string }) {
-    
     const paginate = createPaginator({ perPage });
 
     return paginate<any, Prisma.NewsAggregateArgs>(
@@ -52,5 +59,25 @@ export class NewsService {
         page: page,
       },
     );
+  }
+
+  findUserClaimNewsById(user_id: string, news_id: number) {
+    return this.prismaService.user_claim_news.findUnique({
+      where: {
+        news_id_user_id: {
+          user_id: user_id,
+          news_id: news_id,
+        },
+      },
+    });
+  }
+
+  countUserClaimNews(user_id: string) {
+    return this.prismaService.user_claim_news.count({
+      where: {
+        user_id: user_id,
+        status: ClaimStatus.success,
+      },
+    });
   }
 }
