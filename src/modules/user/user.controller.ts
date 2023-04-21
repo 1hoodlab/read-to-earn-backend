@@ -7,14 +7,14 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('user')
-@ApiTags("User")
+@ApiTags('User')
 export class UserController {
   constructor(private readonly prismaService: PrismaService) {}
 
   @ApiBearerAuth()
   @Get('detail')
   async getUserDetail(@User() user: user) {
-    return omit(user, ['password', 'token_expiry_date', 'time_send_token']);
+    return omit(user, ['password', 'token_expiry_date', 'time_send_token', 'salt']);
   }
 
   //TODO: Link account

@@ -1,11 +1,13 @@
-import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpException, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Role, user_token } from '@prisma/client';
+import { Prisma, Role, user_token } from '@prisma/client';
 import { Public } from 'src/decorators/public.decorator';
 import { GoogleTokenDto, SignInDto, SignUpDto } from './dto/auth.dto';
 import { AuthService } from './services/auth.service';
 import { PasswordService } from './services/password.service';
 import { GoogleAuthenticationService } from './services/google-auth.service';
+import { nanoid } from 'nanoid';
+
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
@@ -41,20 +43,32 @@ export class AuthController {
   @Public()
   @Post('/signup')
   async signUp(@Body() payload: SignUpDto) {
-    let user = await this.authService.findUserByEmailOrUsername(payload.email);
-    if (user) throw new BadRequestException(`User ${payload.email} was exist.`);
+    try {
+      const salt = nanoid();
 
-    let newUser = await this.authService.createCustomer({
-      ...payload,
-      password: await this.passwordService.hashPassword(payload.password),
-    });
+      let newUser = await this.authService.createCustomer(
+        {
+          ...payload,
+          password: await this.passwordService.hashPassword(payload.password, salt),
+        },
+        salt,
+      );
 
-    let accessToken = this.authService.generateTokens({ userId: newUser.id, role: newUser.role });
-    let userToken = await this.authService.createUserTokenByUserId(newUser.id, accessToken);
+      let accessToken = this.authService.generateTokens({ userId: newUser.id, role: newUser.role });
+      let userToken = await this.authService.createUserTokenByUserId(newUser.id, accessToken);
 
-    return {
-      access_token: userToken.access_token,
-    };
+      return {
+        access_token: userToken.access_token,
+      };
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        // P2022: Unique constraint failed
+        // Prisma error codes: https://www.prisma.io/docs/reference/api-reference/error-reference#error-codes
+        if (error.code === 'P2002') {
+          throw new HttpException('User already exists', 400);
+        }
+      }
+    }
   }
 
   @Public()
@@ -64,7 +78,7 @@ export class AuthController {
 
     if (!user) throw new BadRequestException(`Username or email: ${payload.username} not exist.`);
 
-    let validatePassword = await this.passwordService.validatePassword(payload.password, user.password);
+    let validatePassword = await this.passwordService.validatePassword(payload.password, user.salt, user.password);
     if (!validatePassword) throw new BadRequestException(`Password incorrect.`);
 
     const accessToken = this.authService.generateTokens({

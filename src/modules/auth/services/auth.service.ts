@@ -8,6 +8,7 @@ import { PrismaService } from 'nestjs-prisma';
 import { SecurityConfig } from 'src/common/config/config.interface';
 import { SignUpDto } from '../dto/auth.dto';
 import { PasswordService } from './password.service';
+import { nanoid } from 'nanoid';
 @Injectable()
 export class AuthService {
   constructor(
@@ -53,19 +54,23 @@ export class AuthService {
     });
   }
 
-  createCustomer(payload: SignUpDto): Promise<user> {
+  createCustomer(payload: SignUpDto, salt: string): Promise<user> {
     return this.prisma.user.create({
-      data: payload,
+      data: {
+        ...payload,
+        salt: salt,
+      },
     });
   }
 
   async createUserDefault(email: string): Promise<user> {
+    const salt = nanoid();
     return this.prisma.user.create({
       data: {
         username: email, // TODO: update username = email + randomString();
         email: email,
+        salt: salt,
         auth_email_google: email,
-        password: await this.passwordService.hashPassword('12345678'),
       },
     });
   }
@@ -84,10 +89,10 @@ export class AuthService {
    * @param {string} input email or username value
    */
   findUserByEmailOrUsername(input: string): Promise<user> {
-    let condition = {};
-    isEmail(input) ? (condition = { email: input }) : (condition = { username: input });
     return this.prisma.user.findFirst({
-      where: condition,
+      where: {
+        OR: [{ email: input }, { username: input }],
+      },
     });
   }
 

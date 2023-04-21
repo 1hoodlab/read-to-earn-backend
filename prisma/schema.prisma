@@ -16,10 +16,10 @@ generator dbml {
 
 model user {
     id                   String            @id @unique @default(uuid())
-    username             String
-    password             String
+    username             String            @unique
+    password             String?
     avatar               String?
-    email                String
+    email                String            @unique
     first_name           String?
     last_name            String?
     token_expiry_date    DateTime?         @db.Timestamp(6)
@@ -31,6 +31,7 @@ model user {
     time_send_token      DateTime?         @db.Timestamp(6) // set time for token and check resend token after 5 minutes
     role                 Role              @default(reader)
     stars                Int               @default(0)
+    salt                 String?
     created_at           DateTime          @default(now())
     updated_at           DateTime?         @updatedAt @db.Timestamp(6)
     nonce_for_earn       Int?              @default(0)
@@ -81,6 +82,7 @@ model categories_on_news {
 
     @@id([news_id, category_id])
 }
+
 // khi người dùng thỏa mãn điều kiện
 // ngay lúc đo hệ thống sẽ subcribe và tự động tạo một record trong bảng user_claim_token với status pending
 // người dùng claim thông qua sign của backend và gửi lại event về cho BE để BE cập nhật lại status success hay failure

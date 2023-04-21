@@ -4,10 +4,10 @@
 
 Table user {
   id String [pk, unique]
-  username String [not null]
-  password String [not null]
+  username String [unique, not null]
+  password String
   avatar String
-  email String [not null]
+  email String [unique, not null]
   first_name String
   last_name String
   token_expiry_date DateTime
@@ -19,6 +19,7 @@ Table user {
   time_send_token DateTime
   role Role [not null, default: 'reader']
   stars Int [not null, default: 0]
+  salt String
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime
   nonce_for_earn Int [default: 0]
