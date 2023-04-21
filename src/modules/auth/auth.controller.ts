@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, HttpException, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Prisma, Role, user_token } from '@prisma/client';
 import { Public } from 'src/decorators/public.decorator';
@@ -65,7 +65,7 @@ export class AuthController {
         // P2022: Unique constraint failed
         // Prisma error codes: https://www.prisma.io/docs/reference/api-reference/error-reference#error-codes
         if (error.code === 'P2002') {
-          throw new HttpException('User already exists', 400);
+          throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
         }
       }
     }

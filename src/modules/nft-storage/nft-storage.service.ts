@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { nft_storage_token } from './../../constant/index';
-import { HttpException, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CIDString, NFTStorage } from 'nft.storage';
 import { catchError, lastValueFrom, map } from 'rxjs';
 import { AxiosError } from 'axios';
@@ -22,7 +22,7 @@ export class NftStorageService {
     try {
       const status = await this.storage.check(cid);
 
-      if (!status) throw new HttpException('CID not found', 400);
+      if (!status) throw new HttpException('CID not found', HttpStatus.BAD_REQUEST);
 
       const request = this.httpService
         .get(`https://${cid}.ipfs.nftstorage.link/`)

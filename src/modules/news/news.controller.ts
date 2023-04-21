@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ClaimStatus, Role, news, user } from '@prisma/client';
 import { Roles } from 'src/decorators/roles.decorator';
@@ -29,7 +29,7 @@ export class NewsController {
   async createNews(@User() user: user, @Body() news: CreateNewsInputDto): Promise<news> {
     const content = await this.nftStorageService.getMarkdownFile(news.cid);
 
-    if (!content) throw new HttpException('CID not found', 400);
+    if (!content) throw new HttpException('CID not found', HttpStatus.BAD_REQUEST);
 
     return await this.newsService.createNews(news, wordsReadTime(content).wordTime, user);
   }
@@ -37,7 +37,7 @@ export class NewsController {
   @Get(':slug')
   async getNewsDetail(@Param('slug') slug: string): Promise<news> {
     const news = await this.newsService.findNewsBySlug(slug);
-    if (!news) throw new HttpException('News not found!', 400);
+    if (!news) throw new HttpException('News not found!', HttpStatus.BAD_REQUEST);
 
     return news;
   }
@@ -59,7 +59,7 @@ export class NewsController {
     const news = await this.newsService.findNewsBySlug(body.slug);
 
     const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, news.id);
-    if (userClaimNews) throw new HttpException('User Claim News is Exist!', 400);
+    if (userClaimNews) throw new HttpException('User Claim News is Exist!', HttpStatus.BAD_REQUEST);
 
     const transaction_id = `transaction#${user.id}_${news.id}_${generateRandom()}`;
     return await this.newsService.createUserClaimNews(transaction_id, user.id, news.id);
@@ -73,15 +73,15 @@ export class NewsController {
 
   @Post('claim')
   async claimToken(@User() user: user, @Body() body: ClaimTokenDto): Promise<any> {
-    if (!user.wallet_address) throw new HttpException('Please link wallet!', 400);
+    if (!user.wallet_address) throw new HttpException('Please link wallet!', HttpStatus.BAD_REQUEST);
 
     const news = await this.newsService.findNewsById(body.news_id);
-    if (!news) throw new HttpException('News not found!', 400);
+    if (!news) throw new HttpException('News not found!', HttpStatus.BAD_REQUEST);
 
     const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, body.news_id);
 
     if (!userClaimNews || userClaimNews.status === ClaimStatus.failure || userClaimNews.status === ClaimStatus.success)
-      throw new HttpException('You not claim token here!', 400);
+      throw new HttpException('You not claim token here!', HttpStatus.BAD_REQUEST);
 
     const domain: TypedDataDomain = {
       name: 'SNews',
