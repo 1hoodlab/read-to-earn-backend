@@ -1,11 +1,11 @@
 import { Body, Controller, Get, HttpException, Param, Post, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ClaimStatus, Role, news, user } from '@prisma/client';
 import { Roles } from 'src/decorators/roles.decorator';
-import { ClaimToken, CreateNewsInputDto, CreateUserClaimNewsDto, GetNewsAll } from './dto/news.dto';
+import { ClaimTokenDto, CreateNewsInputDto, CreateUserClaimNewsDto, GetNewsAll } from './dto/news.dto';
 import { NewsService } from './news.service';
 import { NftStorageService } from '../nft-storage/nft-storage.service';
-import { wordsReadTime } from 'src/_serivces/util.service';
+import { generateRandom, wordsReadTime } from 'src/_serivces/util.service';
 import { User } from 'src/decorators/user.decorator';
 import { Public } from 'src/decorators/public.decorator';
 import { PaginatedResult } from 'src/_serivces/pagination.service';
@@ -43,7 +43,7 @@ export class NewsController {
   }
 
   @Public()
-  @Get('/all')
+  @Get('all')
   async getNewsAll(@Query() query: GetNewsAll): Promise<PaginatedResult<any>> {
     const { page, perPage, keyword = '' } = query;
     return await this.newsService.getNewsAll({ page, perPage, keyword });
@@ -61,12 +61,18 @@ export class NewsController {
     const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, news.id);
     if (userClaimNews) throw new HttpException('User Claim News is Exist!', 400);
 
-    const transaction_id = '123'; // TODO: create random transaction via transaction#<user_id>_<news_id>_<random string>
+    const transaction_id = `transaction#${user.id}_${news.id}_${generateRandom()}`;
     return await this.newsService.createUserClaimNews(transaction_id, user.id, news.id);
   }
 
+  @Get('list-claim')
+  @Roles([Role.writer, Role.reader])
+  async getListUserClaimNews(@User() user: user): Promise<any> {
+    return this.newsService.getListClaimNews(user.id);
+  }
+
   @Post('claim')
-  async claimToken(@User() user: user, @Body() body: ClaimToken): Promise<any> {
+  async claimToken(@User() user: user, @Body() body: ClaimTokenDto): Promise<any> {
     if (!user.wallet_address) throw new HttpException('Please link wallet!', 400);
 
     const news = await this.newsService.findNewsById(body.news_id);

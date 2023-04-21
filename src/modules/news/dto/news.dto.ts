@@ -46,7 +46,7 @@ export class GetNewsAll {
   keyword: string;
 }
 
-export class ClaimToken {
+export class ClaimTokenDto {
   @ApiProperty()
   news_id: number;
 }
@@ -66,3 +66,4 @@ export type ClaimTokenResponse = {
   s: string;
   slug: string;
 };
+

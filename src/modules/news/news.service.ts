@@ -72,6 +72,21 @@ export class NewsService {
     });
   }
 
+  getListClaimNews(user_id: string) {
+    return this.prismaService.user_claim_news.findMany({
+      where: {
+        user_id: user_id,
+      },
+      select: {
+        news: true,
+        status: true,
+        token_earned: true,
+        transaction_id: true,
+        created_at: true,
+      },
+    });
+  }
+
   countUserClaimNews(user_id: string) {
     return this.prismaService.user_claim_news.count({
       where: {

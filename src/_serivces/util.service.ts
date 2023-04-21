@@ -1,5 +1,5 @@
 import { CHINESE_KOREAN_READ_TIME, WORDS_PER_MIN } from 'src/constant';
-
+import crypto from 'crypto'
 export function totalWordCount(str: string): number {
   return (str.match(/\w+/g) || []).length;
 }
@@ -36,3 +36,7 @@ export function humanizeTime(time) {
     }
     return `${Math.ceil(time)} minutes`;
   }
+
+export function generateRandom() {
+  return crypto.randomBytes(10).toString();
+}
