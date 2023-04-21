@@ -1,18 +1,18 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { ClaimStatus, Role, news, user } from '@prisma/client';
+import { TypedDataDomain, ethers } from 'ethers';
+import { PaginatedResult } from 'src/_serivces/pagination.service';
+import { generateRandom, wordsReadTime } from 'src/_serivces/util.service';
+import { SNEWS_CONTRACT_ADDRESS } from 'src/constant';
+import { Public } from 'src/decorators/public.decorator';
 import { Roles } from 'src/decorators/roles.decorator';
+import { User } from 'src/decorators/user.decorator';
+import { AuthService } from '../auth/services/auth.service';
+import { NftStorageService } from '../nft-storage/nft-storage.service';
+import { MessageType, OnchainService } from '../onchain/onchain.service';
 import { ClaimTokenDto, CreateNewsInputDto, CreateUserClaimNewsDto, GetNewsAll } from './dto/news.dto';
 import { NewsService } from './news.service';
-import { NftStorageService } from '../nft-storage/nft-storage.service';
-import { generateRandom, wordsReadTime } from 'src/_serivces/util.service';
-import { User } from 'src/decorators/user.decorator';
-import { Public } from 'src/decorators/public.decorator';
-import { PaginatedResult } from 'src/_serivces/pagination.service';
-import { SNEWS_CONTRACT_ADDRESS } from 'src/constant';
-import { MessageType, OnchainService } from '../onchain/onchain.service';
-import { TypedDataDomain, ethers } from 'ethers';
-import { AuthService } from '../auth/services/auth.service';
 
 @Controller('news')
 @ApiTags('News')

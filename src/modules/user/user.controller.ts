@@ -1,7 +1,6 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Post } from '@nestjs/common';
 import { user } from '@prisma/client';
 import { User } from 'src/decorators/user.decorator';
-import { PrismaService } from 'nestjs-prisma';
 import { omit } from 'lodash';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { LinkAccountOnCHainDto } from './user.dto';

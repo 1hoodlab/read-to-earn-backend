@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, HttpException, HttpStatus, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Prisma, Role, user_token } from '@prisma/client';
 import { Public } from 'src/decorators/public.decorator';
