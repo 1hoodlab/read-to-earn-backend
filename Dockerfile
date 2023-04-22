@@ -12,6 +12,8 @@ RUN npm install
 
 COPY . .
 
+RUN --mount=type=secret,id=_env,dst=/etc/secrets/.env cp /etc/secrets/.env .
+
 RUN npm run build
 
 FROM node:18.16.0-alpine
