@@ -16,10 +16,11 @@ import { OnchainModule } from './modules/onchain/onchain.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true, load: [config] }),
+
     CacheModule.register({
       isGlobal: true,
     }),
-    ConfigModule.forRoot({ isGlobal: true, load: [config] }),
     PrismaModule.forRoot({
       isGlobal: true,
       prismaServiceOptions: {

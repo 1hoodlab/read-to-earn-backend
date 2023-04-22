@@ -4,7 +4,6 @@ import { ClaimStatus, Role, news, user } from '@prisma/client';
 import { TypedDataDomain, ethers } from 'ethers';
 import { PaginatedResult } from 'src/_serivces/pagination.service';
 import { generateRandom, wordsReadTime } from 'src/_serivces/util.service';
-import { SNEWS_CONTRACT_ADDRESS } from 'src/constant';
 import { Public } from 'src/decorators/public.decorator';
 import { Roles } from 'src/decorators/roles.decorator';
 import { User } from 'src/decorators/user.decorator';
@@ -13,6 +12,8 @@ import { NftStorageService } from '../nft-storage/nft-storage.service';
 import { MessageType, OnchainService } from '../onchain/onchain.service';
 import { ClaimTokenDto, CreateNewsInputDto, CreateUserClaimNewsDto, GetNewsAll } from './dto/news.dto';
 import { NewsService } from './news.service';
+import { ConfigService } from '@nestjs/config';
+import { DATA_DOMAIN_NAME, DATA_DOMAIN_VERSION } from 'src/constant';
 
 @Controller('news')
 @ApiTags('News')
@@ -22,6 +23,7 @@ export class NewsController {
     private readonly nftStorageService: NftStorageService,
     private readonly onchainService: OnchainService,
     private readonly authService: AuthService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Post('create')
@@ -84,9 +86,9 @@ export class NewsController {
       throw new HttpException('You not claim token here!', HttpStatus.BAD_REQUEST);
 
     const domain: TypedDataDomain = {
-      name: 'SNews',
-      version: '1.0',
-      verifyingContract: SNEWS_CONTRACT_ADDRESS,
+      name: DATA_DOMAIN_NAME,
+      version: DATA_DOMAIN_VERSION,
+      verifyingContract: this.configService.get<string>('SNEWS_CONTRACT_ADDRESS'),
     };
     const types = {
       Claim: [

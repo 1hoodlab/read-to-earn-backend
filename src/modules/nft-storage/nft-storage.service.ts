@@ -1,17 +1,17 @@
 import { HttpService } from '@nestjs/axios';
-import { nft_storage_token } from './../../constant/index';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CIDString, NFTStorage } from 'nft.storage';
 import { catchError, lastValueFrom, map } from 'rxjs';
 import { AxiosError } from 'axios';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class NftStorageService {
   private storage: NFTStorage;
   private logger = new Logger(NFTStorage.name);
 
-  constructor(private readonly httpService: HttpService) {
-    this.storage = new NFTStorage({ token: nft_storage_token });
+  constructor(private readonly httpService: HttpService, private readonly configService: ConfigService) {
+    this.storage = new NFTStorage({ token: this.configService.get<string>('NFT_STORAGE_TOKEN') });
   }
 
   async storeMarkdownFile(file: any): Promise<CIDString> {

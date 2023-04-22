@@ -9,7 +9,7 @@ import helmet from 'helmet';
 import type { NestConfig, SwaggerConfig } from '../src/common/config/config.interface';
 import { AllExceptionsFilter } from './common/exception/all-exception.filter';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import  {contentParser} from "fastify-multer"
+import { contentParser } from 'fastify-multer';
 
 import { join } from 'path';
 
@@ -26,6 +26,7 @@ async function bootstrap() {
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
   const configService = app.get(ConfigService);
+
   const nestConfig = configService.get<NestConfig>('nest');
   const swaggerConfig = configService.get<SwaggerConfig>('swagger');
 
@@ -102,7 +103,7 @@ async function bootstrap() {
     templates: join(__dirname, '..', 'views'),
   });
 
-  await app.listen(nestConfig.port || 3000, nestConfig.address, (err, address) => {
+  await app.listen(process.env.BACKEND_PORT || 3000, process.env.BACKEND_HOST, (err, address) => {
     console.log('Start app.server.address', address);
     if (err) {
       console.error('app.err', err);

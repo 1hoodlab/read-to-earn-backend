@@ -19,6 +19,7 @@ FROM node:18.16.0-alpine
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/.env ./
 
 EXPOSE 8080
 CMD [ "npm", "run", "start:prod" ]

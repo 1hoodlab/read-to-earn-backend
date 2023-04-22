@@ -4,8 +4,15 @@ export interface Config {
   swagger: SwaggerConfig;
   graphql?: GraphqlConfig;
   security: SecurityConfig;
+  onchain: OnchainConfig;
 }
 
+export interface OnchainConfig {
+  network_rpc_url: string;
+  snews_contract_address: string;
+  signer_private_key: string;
+  nft_storage_token: string;
+}
 export interface NestConfig {
   address: string;
   port: number | string;
