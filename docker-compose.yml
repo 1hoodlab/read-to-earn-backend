@@ -1,5 +1,17 @@
 version: '3.7'
 services:
+  postgres:
+      image: postgres:latest
+      container_name: postgres
+      restart: always
+      ports:
+        - 5432:5432
+      env_file:
+        - .env
+      volumes:
+        - postgres:/var/lib/postgresql/data
+      networks:
+        - postgres
   spirity-api:
     container_name: rte-api
     build:
@@ -15,16 +27,6 @@ services:
     networks:
       - postgres
 
-  postgres:
-    image: postgres:latest
-    container_name: postgres
-    restart: always
-    ports:
-      - 5432:5432
-    env_file:
-      - .env
-    volumes:
-      - postgres:/var/lib/postgresql/data
 
 volumes:
   postgres:
