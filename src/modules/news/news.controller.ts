@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ClaimStatus, Role, news, user } from '@prisma/client';
 import { TypedDataDomain, ethers } from 'ethers';
 import { PaginatedResult } from 'src/_serivces/pagination.service';
@@ -26,6 +26,7 @@ export class NewsController {
     private readonly configService: ConfigService,
   ) {}
 
+  @ApiBearerAuth()
   @Post('create')
   @Roles([Role.writer])
   async createNews(@User() user: user, @Body() news: CreateNewsInputDto): Promise<news> {
@@ -53,7 +54,7 @@ export class NewsController {
 
   // BE của nextJS sẽ gọi API create-claim và truyền vào slug và token của người dùng
   // BE của nextJS có nhiệm vụ tracking việc đọc của người dùng nếu hoàn thành nhiệm vụ thì gọi create-claim
-
+  @ApiBearerAuth()
   @Post('create-claim')
   @Roles([Role.root])
   async createUserClaimNews(@Body() body: CreateUserClaimNewsDto) {
@@ -67,12 +68,15 @@ export class NewsController {
     return await this.newsService.createUserClaimNews(transaction_id, user.id, news.id);
   }
 
+  @ApiBearerAuth()
   @Get('list-claim')
   @Roles([Role.writer, Role.reader])
   async getListUserClaimNews(@User() user: user): Promise<any> {
     return this.newsService.getListClaimNews(user.id);
   }
 
+  @ApiBearerAuth()
+  @Roles([Role.reader])
   @Post('claim')
   async claimToken(@User() user: user, @Body() body: ClaimTokenDto): Promise<any> {
     if (!user.wallet_address) throw new HttpException('Please link wallet!', HttpStatus.BAD_REQUEST);
