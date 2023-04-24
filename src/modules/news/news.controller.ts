@@ -15,6 +15,7 @@ import { NewsService } from './news.service';
 import { ConfigService } from '@nestjs/config';
 import { DATA_DOMAIN_NAME, DATA_DOMAIN_VERSION } from 'src/constant';
 
+// reference: https://restfulapi.net/resource-naming/
 @Controller('news')
 @ApiTags('News')
 export class NewsController {
