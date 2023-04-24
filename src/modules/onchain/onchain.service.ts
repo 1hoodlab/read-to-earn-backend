@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as ethers from 'ethers';
-import { NestConfig, OnchainConfig } from 'src/common/config/config.interface';
 
 export type MessageType = {
   from: string;
