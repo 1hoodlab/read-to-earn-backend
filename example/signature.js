@@ -9,6 +9,7 @@ const chai = require('chai');
 
 const typedData = {
   types: {
+    // định nghĩa các type khi sign
     EIP712Domain: [
       { name: 'name', type: 'string' },
       { name: 'version', type: 'string' },
@@ -25,14 +26,16 @@ const typedData = {
       { name: 'contents', type: 'string' },
     ],
   },
-  primaryType: 'Mail',
+  primaryType: 'Mail', // kiểu dữ liệu chính mà trong message field sẽ sử dụng
   domain: {
+    // được định nghĩa trong EIP712Domain
     name: 'Ether Mail',
     version: '1',
     chainId: 1,
     verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
   },
   message: {
+    // do kiểu dữ liệu chính là Mail nên phải có các field: [from, to, contents]
     from: {
       name: 'Cow',
       wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',

@@ -24,10 +24,10 @@ contract Example {
         "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
     );
 
-    bytes32 constant PERSON_TYPEHASH = keccak256(
+    bytes32 constant PERSON_TYPEHASH = keccak256( //các kiểu dữ liệu là struct thì phải encode bằng keccak256
         "Person(string name,address wallet)"
     );
-
+    // lưu ý không được có khoảng cách giữa các dấu ","
     bytes32 constant MAIL_TYPEHASH = keccak256(
         "Mail(Person from,Person to,string contents)Person(string name,address wallet)"
     );
@@ -57,11 +57,12 @@ contract Example {
     function hash(Person person) internal pure returns (bytes32) {
         return keccak256(abi.encode(
             PERSON_TYPEHASH,
-            keccak256(bytes(person.name)),
+            keccak256(bytes(person.name)), //kiểu dữ liệu ko phải là primitive và không phải là struct thì chỉ cần sử dụng keccak256 để encode
             person.wallet
         ));
     }
-
+    // tóm lại kiểu dữ liệu không phải primitive thì phải encode
+    
     function hash(Mail mail) internal pure returns (bytes32) {
         return keccak256(abi.encode(
             MAIL_TYPEHASH,
