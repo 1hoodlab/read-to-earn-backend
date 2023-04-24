@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ClaimStatus, Role, news, user } from '@prisma/client';
 import { TypedDataDomain, ethers } from 'ethers';
@@ -27,7 +27,7 @@ export class NewsController {
   ) {}
 
   @ApiBearerAuth()
-  @Post('create')
+  @Post('managed-news')
   @Roles([Role.writer])
   async createNews(@User() user: user, @Body() news: CreateNewsInputDto): Promise<news> {
     const content = await this.nftStorageService.getMarkdownFile(news.cid);
@@ -46,7 +46,7 @@ export class NewsController {
   }
 
   @Public()
-  @Get('all')
+  @Get('managed-news')
   async getNewsAll(@Query() query: GetNewsAll): Promise<PaginatedResult<any>> {
     const { page, perPage, keyword = '' } = query;
     return await this.newsService.getNewsAll({ page, perPage, keyword });
@@ -55,7 +55,7 @@ export class NewsController {
   // BE của nextJS sẽ gọi API create-claim và truyền vào slug và token của người dùng
   // BE của nextJS có nhiệm vụ tracking việc đọc của người dùng nếu hoàn thành nhiệm vụ thì gọi create-claim
   @ApiBearerAuth()
-  @Post('create-claim')
+  @Post('managed-claim')
   @Roles([Role.root])
   async createUserClaimNews(@Body() body: CreateUserClaimNewsDto) {
     const user = await this.authService.getUserFromToken(body.access_token);
@@ -69,7 +69,7 @@ export class NewsController {
   }
 
   @ApiBearerAuth()
-  @Get('list-claim')
+  @Get('claims')
   @Roles([Role.writer, Role.reader])
   async getListUserClaimNews(@User() user: user): Promise<any> {
     return this.newsService.getListClaimNews(user.id);
@@ -77,7 +77,7 @@ export class NewsController {
 
   @ApiBearerAuth()
   @Roles([Role.reader])
-  @Post('claim')
+  @Put('managed-claim')
   async claimToken(@User() user: user, @Body() body: ClaimTokenDto): Promise<any> {
     if (!user.wallet_address) throw new HttpException('Please link wallet!', HttpStatus.BAD_REQUEST);
 
