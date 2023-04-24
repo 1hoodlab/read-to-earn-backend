@@ -3,7 +3,7 @@
 //// ------------------------------------------------------
 
 Table user {
-  id String [pk]
+  id String [pk, unique]
   username String [unique, not null]
   password String
   avatar String

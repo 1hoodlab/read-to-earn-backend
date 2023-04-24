@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ClaimStatus, Role, news, user } from '@prisma/client';
 import { TypedDataDomain, ethers } from 'ethers';
@@ -55,18 +55,22 @@ export class NewsController {
 
   // BE của nextJS sẽ gọi API create-claim và truyền vào slug và token của người dùng
   // BE của nextJS có nhiệm vụ tracking việc đọc của người dùng nếu hoàn thành nhiệm vụ thì gọi create-claim
+  // nên gửi user token trong thẻ header: x-user-token
+
   @ApiBearerAuth()
   @Post('managed-claim')
   @Roles([Role.root])
-  async createUserClaimNews(@Body() body: CreateUserClaimNewsDto) {
-    const user = await this.authService.getUserFromToken(body.access_token);
+  async createUserClaimNews(@Headers('x-reader-token') readerToken: string, @Body() body: CreateUserClaimNewsDto) {
+    if (!readerToken) throw new HttpException("Please add 'x-reader-token' to header", HttpStatus.BAD_REQUEST);
+
+    const user = await this.authService.getUserFromToken(readerToken);
     const news = await this.newsService.findNewsBySlug(body.slug);
 
     const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, news.id);
     if (userClaimNews) throw new HttpException('User Claim News is Exist!', HttpStatus.BAD_REQUEST);
 
-    const transaction_id = `transaction#${user.id}_${news.id}_${generateRandom()}`;
-    return await this.newsService.createUserClaimNews(transaction_id, user.id, news.id);
+    const transactionId = `transaction#${user.id}_${news.id}_${generateRandom()}`;
+    return await this.newsService.createUserClaimNews(transactionId, user.id, news.id);
   }
 
   @ApiBearerAuth()

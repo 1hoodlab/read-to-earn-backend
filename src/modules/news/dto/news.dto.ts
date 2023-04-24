@@ -54,9 +54,6 @@ export class ClaimTokenDto {
 export class CreateUserClaimNewsDto {
   @ApiProperty()
   slug: string;
-
-  @ApiProperty()
-  access_token: string;
 }
 
 export type ClaimTokenResponse = {

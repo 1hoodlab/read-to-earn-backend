@@ -69,6 +69,7 @@ async function bootstrap() {
       }
     },
     allowedHeaders: [
+      'x-reader-token',
       'x-msg-signature',
       'x-signature',
       'x-wallet-address',
