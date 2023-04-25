@@ -10,7 +10,7 @@ import { User } from 'src/decorators/user.decorator';
 import { AuthService } from '../auth/services/auth.service';
 import { NftStorageService } from '../nft-storage/nft-storage.service';
 import { MessageType, OnchainService } from '../onchain/onchain.service';
-import { ClaimTokenDto, CreateNewsInputDto, CreateUserClaimNewsDto, GetNewsAll } from './dto/news.dto';
+import { ClaimTokenDto, ClaimTokenResponseDto, CreateNewsInputDto, CreateUserClaimNewsDto, GetNewsAll } from './dto/news.dto';
 import { NewsService } from './news.service';
 import { ConfigService } from '@nestjs/config';
 import { DATA_DOMAIN_NAME, DATA_DOMAIN_VERSION } from 'src/constant';
@@ -83,7 +83,7 @@ export class NewsController {
   @ApiBearerAuth()
   @Roles([Role.reader])
   @Put('managed-claim')
-  async claimToken(@User() user: user, @Body() body: ClaimTokenDto): Promise<any> {
+  async claimToken(@User() user: user, @Body() body: ClaimTokenDto): Promise<ClaimTokenResponseDto> {
     if (!user.wallet_address) throw new HttpException('Please link wallet!', HttpStatus.BAD_REQUEST);
 
     const news = await this.newsService.findNewsById(body.news_id);

@@ -56,7 +56,7 @@ export class CreateUserClaimNewsDto {
   slug: string;
 }
 
-export type ClaimTokenResponse = {
+export type ClaimTokenResponseDto = {
   transaction_id: string;
   v: number;
   r: string;
