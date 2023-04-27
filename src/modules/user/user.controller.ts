@@ -3,7 +3,7 @@ import { user } from '@prisma/client';
 import { User } from 'src/decorators/user.decorator';
 import { omit } from 'lodash';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { LinkAccountOnCHainDto } from './user.dto';
+import { LinkAccountOnChain } from './user.dto';
 import * as ethers from 'ethers';
 import { UserService } from './user.service';
 
@@ -20,11 +20,12 @@ export class UserController {
 
   @ApiBearerAuth()
   @Post('link-account')
-  async linkAccountOnChain(@User() user: user, @Body() body: LinkAccountOnCHainDto) {
+  async linkAccountOnChain(@User() user: user, @Body() body: LinkAccountOnChain) {
     if (user.wallet_address) throw new HttpException('You had linked wallet address', HttpStatus.BAD_REQUEST);
 
     const message = `Link account: ${user.id} to ${body.wallet_address}`;
 
+    console.log(message);
     try {
       const signerAddress = await ethers.utils.verifyMessage(message, body.signature);
 
