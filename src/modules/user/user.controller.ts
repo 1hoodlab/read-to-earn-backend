@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Logger, Post } from '@nestjs/common';
 import { user } from '@prisma/client';
 import { User } from 'src/decorators/user.decorator';
 import { omit } from 'lodash';
@@ -11,7 +11,7 @@ import { UserService } from './user.service';
 @ApiTags('User')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
+  private logger = new Logger(UserController.name);
   @ApiBearerAuth()
   @Get('detail')
   async getUserDetail(@User() user: user) {
@@ -32,6 +32,7 @@ export class UserController {
 
       await this.userService.linkAccount(user.id, signerAddress);
     } catch (error) {
+      this.logger.error(error);
       throw new HttpException('Something went wrong!', HttpStatus.BAD_REQUEST);
     }
 
