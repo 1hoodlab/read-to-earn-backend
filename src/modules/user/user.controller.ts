@@ -27,9 +27,10 @@ export class UserController {
 
     console.log(message);
     try {
+      this.logger.log(`Message: ${message}, body.wallet_address: ${body.wallet_address}`);
       const signerAddress = await ethers.utils.verifyMessage(message, body.signature);
 
-      this.logger.log(`Message: ${message}, SignerAddress: ${signerAddress}, body.wallet_address: ${body.wallet_address}`);
+      this.logger.log(`signerAddress: ${signerAddress}`);
 
       if (signerAddress !== body.wallet_address) throw new HttpException('link account error!', HttpStatus.BAD_REQUEST);
 
