@@ -1,5 +1,5 @@
 import { CHINESE_KOREAN_READ_TIME, WORDS_PER_MIN } from 'src/constant';
-import crypto from 'crypto'
+import crypto from 'crypto';
 export function totalWordCount(str: string): number {
   return (str.match(/\w+/g) || []).length;
 }
@@ -29,14 +29,19 @@ export function wordsReadTime(string, wordsPerMin = WORDS_PER_MIN) {
 }
 
 export function humanizeTime(time) {
-    if (time < 0.5) {
-      return 'less than a minute';
-    } if (time >= 0.5 && time < 1.5) {
-      return '1 minute';
-    }
-    return `${Math.ceil(time)} minutes`;
+  if (time < 0.5) {
+    return 'less than a minute';
   }
+  if (time >= 0.5 && time < 1.5) {
+    return '1 minute';
+  }
+  return `${Math.ceil(time)} minutes`;
+}
 
 export function generateRandom() {
   return crypto.randomBytes(10).toString();
+}
+
+export function generateSignInMessage(wallet_address: string, nonce: string) {
+  return `Welcome to Snews!\n\nClick to sign in and accept the Snews Terms of Service and Privacy Policy.\n\nThis request will not trigger a blockchain transaction or cost any gas fees.\n\nYour authentication status will reset after 24 hours.\n\nWallet address:\n${wallet_address}\n\nNonce:\n${nonce}`;
 }

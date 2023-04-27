@@ -3,7 +3,7 @@
 //// ------------------------------------------------------
 
 Table user {
-  id String [pk, unique]
+  id String [pk]
   username String [unique, not null]
   password String
   avatar String
@@ -23,7 +23,7 @@ Table user {
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime
   nonce_for_earn Int [default: 0]
-  nonce_auth_metamask Int [default: 0]
+  nonce_auth_metamask String
   user_token user_token
   news news [not null]
   user_claim_news user_claim_news [not null]

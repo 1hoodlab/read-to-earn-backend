@@ -35,7 +35,7 @@ model user {
     created_at           DateTime          @default(now())
     updated_at           DateTime?         @updatedAt @db.Timestamp(6)
     nonce_for_earn       Int?              @default(0)
-    nonce_auth_metamask  Int?              @default(0)
+    nonce_auth_metamask  String?
     user_token           user_token?
     news                 news[]
     user_claim_news      user_claim_news[]

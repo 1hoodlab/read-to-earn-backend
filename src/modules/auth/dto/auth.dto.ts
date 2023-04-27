@@ -13,6 +13,15 @@ export interface JwtDto {
 
   role: string;
 }
+export class SignInWithMetamakasDto {
+  @ApiProperty()
+  @IsString()
+  wallet_address: string;
+
+  @ApiProperty()
+  @IsString()
+  msg_signature: string;
+}
 
 export class SignInDto {
   @ApiProperty()

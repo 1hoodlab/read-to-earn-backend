@@ -1,4 +1,4 @@
-import { CACHE_MANAGER, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { user, user_token } from '@prisma/client';
@@ -12,7 +12,6 @@ import { nanoid } from 'nanoid';
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
     private readonly passwordService: PasswordService,
@@ -116,6 +115,34 @@ export class AuthService {
       create: {
         user_id: userId,
         access_token: accessToken,
+      },
+    });
+  }
+
+  findUserByWalletAddress(walletAddres: string): Promise<user> {
+    return this.prisma.user.findFirst({
+      where: {
+        auth_metamask_wallet: walletAddres,
+      },
+    });
+  }
+
+  createUerByWalletAddress(walletAddress: string, nonce: string): Promise<user> {
+    return this.prisma.user.create({
+      data: {
+        username: walletAddress,
+        auth_metamask_wallet: walletAddress,
+        email: `${walletAddress}@gmail.com`,
+        nonce_auth_metamask: nonce,
+      },
+    });
+  }
+
+  updateAuthMetamaskNonce(user_id: string, nonce: string): Promise<user> {
+    return this.prisma.user.update({
+      where: { id: user_id },
+      data: {
+        nonce_auth_metamask: nonce,
       },
     });
   }
