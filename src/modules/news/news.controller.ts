@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ClaimStatus, Role, news, user } from '@prisma/client';
-import { TypedDataDomain, ethers } from 'ethers';
+import { BigNumber, TypedDataDomain, ethers } from 'ethers';
 import { PaginatedResult } from 'src/_serivces/pagination.service';
 import { generateRandom, wordsReadTime } from 'src/_serivces/util.service';
 import { Public } from 'src/decorators/public.decorator';
@@ -13,12 +13,14 @@ import { MessageType, OnchainService } from '../onchain/onchain.service';
 import { ClaimTokenDto, ClaimTokenResponseDto, CreateNewsInputDto, CreateUserClaimNewsDto, GetNewsAll } from './dto/news.dto';
 import { NewsService } from './news.service';
 import { ConfigService } from '@nestjs/config';
-import { DATA_DOMAIN_NAME, DATA_DOMAIN_VERSION } from 'src/constant';
+import { DATA_DOMAIN_NAME, DATA_DOMAIN_VERSION, Event } from 'src/constant';
+import { Logger, Result } from 'ethers/lib/utils';
 
 // reference: https://restfulapi.net/resource-naming/
 @Controller('news')
 @ApiTags('News')
 export class NewsController {
+  private logger = new Logger(NewsController.name);
   constructor(
     private readonly newsService: NewsService,
     private readonly nftStorageService: NftStorageService,
@@ -33,9 +35,19 @@ export class NewsController {
   async createNews(@User() user: user, @Body() news: CreateNewsInputDto): Promise<news> {
     const content = await this.nftStorageService.getMarkdownFile(news.cid);
 
+    this.logger.info(`Event: ${Event.CreateNewsEvent} - txhash: ${news.txhash}`);
+
     if (!content) throw new HttpException('CID not found', HttpStatus.BAD_REQUEST);
 
-    return await this.newsService.createNews(news, wordsReadTime(content).wordTime, user);
+    let [tokenId, ownerAddress, slug, totalSupply, paymentToken] = await this.onchainService.decodeTxHash(news.txhash);
+
+    news.payment_token = paymentToken;
+    news.slug = slug;
+    news.content_url = `https://${news.cid}.ipfs.nftstorage.link/`;
+
+    this.logger.info(content, tokenId, ownerAddress, slug, totalSupply, paymentToken);
+
+    return await this.newsService.createNews(news, wordsReadTime(content).wordTime, user, tokenId.toNumber(), totalSupply.toString());
   }
   @Public()
   @Get(':slug')

@@ -8,10 +8,18 @@ import { createPaginator } from 'src/_serivces/pagination.service';
 export class NewsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  createNews(news: CreateNewsInputDto, minRead: number, author: user) {
+  createNews(news: CreateNewsInputDto, minRead: number, author: user, tokenId: number, totalSupply: string) {
+    console.log(news, tokenId);
     return this.prismaService.news.create({
       data: {
-        ...news,
+        title: news.title,
+        cid: news.cid,
+        content_url: news.content_url,
+        payment_token: news.payment_token,
+        total_supply: totalSupply,
+        slug: news.slug,
+        thumbnail: news.thumbnail,
+        token_id: tokenId,
         min_read: minRead,
         author: {
           connect: {

@@ -62,7 +62,7 @@ model news {
     cid                String               @unique
     total_supply       String?
     payment_token      Int?
-    min_read           Int //  seconds
+    min_read           Float //  seconds
     author             user                 @relation(fields: [author_id], references: [id])
     author_id          String
     published          Boolean              @default(true)

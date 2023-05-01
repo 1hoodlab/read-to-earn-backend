@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "news" ALTER COLUMN "min_read" SET DATA TYPE DOUBLE PRECISION;

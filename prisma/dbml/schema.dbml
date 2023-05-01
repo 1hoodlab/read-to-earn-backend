@@ -48,7 +48,7 @@ Table news {
   cid String [unique, not null]
   total_supply String
   payment_token Int
-  min_read Int [not null]
+  min_read Float [not null]
   author user [not null]
   author_id String [not null]
   published Boolean [not null, default: true]
