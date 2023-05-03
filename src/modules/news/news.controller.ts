@@ -10,7 +10,14 @@ import { User } from 'src/decorators/user.decorator';
 import { AuthService } from '../auth/services/auth.service';
 import { NftStorageService } from '../nft-storage/nft-storage.service';
 import { MessageType, OnchainService } from '../onchain/onchain.service';
-import { ClaimTokenDto, ClaimTokenResponseDto, CreateNewsInputDto, CreateUserClaimNewsDto, GetNewsAll } from './dto/news.dto';
+import {
+  ClaimTokenDto,
+  ClaimTokenResponseDto,
+  CreateNewsInputDto,
+  CreateUserClaimNewsDto,
+  GetNewsAll,
+  UpdateStatusUserClaimNewsDto,
+} from './dto/news.dto';
 import { NewsService } from './news.service';
 import { ConfigService } from '@nestjs/config';
 import { DATA_DOMAIN_NAME, DATA_DOMAIN_VERSION, Event } from 'src/constant';
@@ -79,10 +86,33 @@ export class NewsController {
     const news = await this.newsService.findNewsBySlug(body.slug);
 
     const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, news.id);
-    if (userClaimNews) throw new HttpException('User Claim News is Exist!', HttpStatus.BAD_REQUEST);
+    if (userClaimNews) return userClaimNews;
 
     const transactionId = `transaction#${user.id}_${news.id}_${generateRandom()}`;
     return await this.newsService.createUserClaimNews(transactionId, user.id, news.id);
+  }
+
+  @ApiBearerAuth()
+  @Put('managed-claim/status')
+  @Roles([Role.root])
+  async updateStatusUserClaimNews(@Headers('x-reader-token') readerToken: string, @Body() body: UpdateStatusUserClaimNewsDto): Promise<any> {
+    if (!readerToken) throw new HttpException("Please add 'x-reader-token' to header", HttpStatus.BAD_REQUEST);
+
+    const user = await this.authService.getUserFromToken(readerToken);
+    const news = await this.newsService.findNewsBySlug(body.slug);
+
+    this.logger.info(body.slug, news.id, user.id);
+
+    const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, news.id);
+    if (!userClaimNews) throw new HttpException('User Claim News not found!', HttpStatus.BAD_REQUEST);
+
+    console.log(userClaimNews);
+
+    if (userClaimNews.status !== ClaimStatus.pending) throw new HttpException('update status dont have turn!', HttpStatus.BAD_REQUEST);
+
+    this.logger.info(user.id, news.id, body.status);
+
+    return await this.newsService.updateStatusUserClaimNews(user.id, news.id, body.status);
   }
 
   @ApiBearerAuth()
@@ -96,6 +126,7 @@ export class NewsController {
   @Roles([Role.reader])
   @Put('managed-claim')
   async claimToken(@User() user: user, @Body() body: ClaimTokenDto): Promise<ClaimTokenResponseDto> {
+    //TODO: check onchain for approve claim news [urgent]
     if (!user.wallet_address) throw new HttpException('Please link wallet!', HttpStatus.BAD_REQUEST);
 
     const news = await this.newsService.findNewsById(body.news_id);
@@ -103,8 +134,7 @@ export class NewsController {
 
     const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, body.news_id);
 
-    if (!userClaimNews || userClaimNews.status === ClaimStatus.failure || userClaimNews.status === ClaimStatus.success)
-      throw new HttpException('You not claim token here!', HttpStatus.BAD_REQUEST);
+    if (!userClaimNews || userClaimNews.status === ClaimStatus.failure) throw new HttpException('You not claim token here!', HttpStatus.BAD_REQUEST);
 
     const domain: TypedDataDomain = {
       name: DATA_DOMAIN_NAME,
@@ -129,6 +159,8 @@ export class NewsController {
       value: ethers.utils.parseEther(news.total_supply),
     };
     let signMessage = await this.onchainService.signMessage(domain, types, message);
+
+    await this.newsService.updateStatusUserClaimNews(user.id, news.id, ClaimStatus.success);
 
     return {
       r: signMessage.r,

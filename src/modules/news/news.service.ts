@@ -3,10 +3,13 @@ import { PrismaModule, PrismaService } from 'nestjs-prisma';
 import { CreateNewsInputDto } from './dto/news.dto';
 import { ClaimStatus, Prisma, news, user } from '@prisma/client';
 import { createPaginator } from 'src/_serivces/pagination.service';
+import { BaseService } from 'src/_serivces/base.service';
 
 @Injectable()
-export class NewsService {
-  constructor(private readonly prismaService: PrismaService) {}
+export class NewsService extends BaseService {
+  constructor(private readonly prismaService: PrismaService) {
+    super();
+  }
 
   createNews(news: CreateNewsInputDto, minRead: number, author: user, tokenId: number, totalSupply: string) {
     console.log(news, tokenId);
@@ -70,13 +73,15 @@ export class NewsService {
   }
 
   findUserClaimNewsById(user_id: string, news_id: number) {
-    return this.prismaService.user_claim_news.findUnique({
-      where: {
-        news_id_user_id: {
-          user_id: user_id,
-          news_id: news_id,
+    return this.fetchCacheable(`${user_id}-${news_id}`, () => {
+      return this.prismaService.user_claim_news.findUnique({
+        where: {
+          news_id_user_id: {
+            user_id: user_id,
+            news_id: news_id,
+          },
         },
-      },
+      });
     });
   }
 
@@ -119,6 +124,20 @@ export class NewsService {
         },
         transaction_id: transaction_id,
         token_earned: '0',
+      },
+    });
+  }
+
+  updateStatusUserClaimNews(user_id: string, news_id: number, status: ClaimStatus) {
+    return this.prismaService.user_claim_news.update({
+      where: {
+        news_id_user_id: {
+          news_id: news_id,
+          user_id: user_id,
+        },
+      },
+      data: {
+        status: status,
       },
     });
   }

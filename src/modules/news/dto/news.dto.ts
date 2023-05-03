@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { ClaimStatus } from '@prisma/client';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateNewsInputDto {
   @ApiProperty({ default: 'title' })
@@ -52,7 +53,22 @@ export class ClaimTokenDto {
 
 export class CreateUserClaimNewsDto {
   @ApiProperty()
+  @IsString()
   slug: string;
+}
+
+export class UpdateStatusUserClaimNewsDto {
+  @ApiProperty()
+  @IsString()
+  slug: string;
+
+  @ApiProperty()
+  @IsString()
+  user_id: string;
+
+  @ApiProperty({ enum: ClaimStatus })
+  @IsString()
+  status: ClaimStatus;
 }
 
 export type ClaimTokenResponseDto = {
