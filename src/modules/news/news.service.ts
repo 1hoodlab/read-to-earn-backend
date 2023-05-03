@@ -74,9 +74,9 @@ export class NewsService extends BaseService {
     );
   }
 
-  findUserClaimNewsById(user_id: string, news_id: number) {
-    return this.fetchCacheable(`${user_id}-${news_id}`, () => {
-      return this.prismaService.user_claim_news.findUnique({
+  async findUserClaimNewsById(user_id: string, news_id: number) {
+    return this.fetchCacheable(`${user_id}-${news_id}`, async () => {
+      return await this.prismaService.user_claim_news.findUnique({
         where: {
           news_id_user_id: {
             user_id: user_id,

@@ -136,10 +136,12 @@ export class NewsController {
 
     if (!userClaimNews || userClaimNews.status === ClaimStatus.failure) throw new HttpException('You not claim token here!', HttpStatus.BAD_REQUEST);
 
+    this.logger.info(`verifyingContract: ${this.configService.get<string>('SNEWS_CONTRACT_ADDRESS').toLowerCase()}`);
+
     const domain: TypedDataDomain = {
       name: DATA_DOMAIN_NAME,
       version: DATA_DOMAIN_VERSION,
-      verifyingContract: this.configService.get<string>('SNEWS_CONTRACT_ADDRESS'),
+      verifyingContract: this.configService.get<string>('SNEWS_CONTRACT_ADDRESS').toLowerCase(),
     };
     const types = {
       Claim: [
@@ -152,15 +154,22 @@ export class NewsController {
 
     let userClaimNonce = await this.newsService.countUserClaimNews(user.id);
 
+    this.logger.info(userClaimNonce, news.total_supply);
+
     const message: MessageType = {
-      from: user.wallet_address,
+      from: user.wallet_address.toLowerCase(),
       tokenId: news.token_id,
-      nonce: userClaimNonce + 1,
-      value: ethers.utils.parseEther(news.total_supply),
+      nonce: userClaimNonce - 1,
+      value: BigNumber.from(news.total_supply),
     };
+
+    this.logger.info(domain, message);
+
     let signMessage = await this.onchainService.signMessage(domain, types, message);
 
-    await this.newsService.updateStatusUserClaimNews(user.id, news.id, ClaimStatus.success);
+    if (userClaimNews.status !== ClaimStatus.success) {
+      await this.newsService.updateStatusUserClaimNews(user.id, news.id, ClaimStatus.success);
+    }
 
     return {
       r: signMessage.r,

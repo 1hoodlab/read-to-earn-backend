@@ -48,6 +48,7 @@ export class GetNewsAll {
 
 export class ClaimTokenDto {
   @ApiProperty()
+  @IsNumber()
   news_id: number;
 }
 
