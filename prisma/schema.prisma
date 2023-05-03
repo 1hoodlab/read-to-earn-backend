@@ -92,7 +92,7 @@ model user_claim_news {
     news_id        Int
     user           user        @relation(fields: [user_id], references: [id])
     user_id        String
-    transaction_id String
+    transaction_id String      @unique
     token_earned   String
     status         ClaimStatus @default(pending)
     created_at     DateTime    @default(now())

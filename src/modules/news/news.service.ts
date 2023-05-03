@@ -74,16 +74,14 @@ export class NewsService extends BaseService {
     );
   }
 
-  async findUserClaimNewsById(user_id: string, news_id: number) {
-    return this.fetchCacheable(`${user_id}-${news_id}`, async () => {
-      return await this.prismaService.user_claim_news.findUnique({
-        where: {
-          news_id_user_id: {
-            user_id: user_id,
-            news_id: news_id,
-          },
+  findUserClaimNewsById(user_id: string, news_id: number) {
+    return this.prismaService.user_claim_news.findUnique({
+      where: {
+        news_id_user_id: {
+          user_id: user_id,
+          news_id: news_id,
         },
-      });
+      },
     });
   }
 
@@ -107,6 +105,9 @@ export class NewsService extends BaseService {
       where: {
         user_id: user_id,
         status: ClaimStatus.success,
+        token_earned: {
+          not: '0',
+        },
       },
     });
   }
@@ -140,6 +141,17 @@ export class NewsService extends BaseService {
       },
       data: {
         status: status,
+      },
+    });
+  }
+
+  updateTokenEarned(transactionId: string, tokenEarned: string) {
+    return this.prismaService.user_claim_news.update({
+      where: {
+        transaction_id: transactionId,
+      },
+      data: {
+        token_earned: tokenEarned,
       },
     });
   }

@@ -85,7 +85,10 @@ export class NewsController {
     const user = await this.authService.getUserFromToken(readerToken);
     const news = await this.newsService.findNewsBySlug(body.slug);
 
+    console.log(user.id, news.id);
     const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, news.id);
+
+    console.log(userClaimNews);
     if (userClaimNews) return userClaimNews;
 
     const transactionId = `transaction#${user.id}_${news.id}_${generateRandom()}`;
@@ -124,6 +127,14 @@ export class NewsController {
 
   @ApiBearerAuth()
   @Roles([Role.reader])
+  @Get('managed-claim/verify/:txhash')
+  async verifyTxHash(@Param('txhash') txhash: string): Promise<any> {
+    const [tokenId, readerAddress, tokenValue, transactionId] = await this.onchainService.decodeTxHash(txhash);
+    return await this.newsService.updateTokenEarned(transactionId, tokenValue.toString());
+  }
+
+  @ApiBearerAuth()
+  @Roles([Role.reader])
   @Put('managed-claim')
   async claimToken(@User() user: user, @Body() body: ClaimTokenDto): Promise<ClaimTokenResponseDto> {
     //TODO: check onchain for approve claim news [urgent]
@@ -134,13 +145,16 @@ export class NewsController {
 
     const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, body.news_id);
 
-    if (!userClaimNews || userClaimNews.status === ClaimStatus.failure) throw new HttpException('You not claim token here!', HttpStatus.BAD_REQUEST);
+    console.log(userClaimNews);
+
+    if (!userClaimNews || userClaimNews.status === ClaimStatus.failure || userClaimNews.status !== ClaimStatus.success)
+      throw new HttpException('You not claim token here!', HttpStatus.BAD_REQUEST);
 
     this.logger.info(`verifyingContract: ${this.configService.get<string>('SNEWS_CONTRACT_ADDRESS').toLowerCase()}`);
 
     const domain: TypedDataDomain = {
-      name: DATA_DOMAIN_NAME,
-      version: DATA_DOMAIN_VERSION,
+      name: 'SNews',
+      version: 'v1.0',
       verifyingContract: this.configService.get<string>('SNEWS_CONTRACT_ADDRESS').toLowerCase(),
     };
     const types = {
@@ -159,17 +173,13 @@ export class NewsController {
     const message: MessageType = {
       from: user.wallet_address.toLowerCase(),
       tokenId: news.token_id,
-      nonce: userClaimNonce - 1,
+      nonce: userClaimNonce,
       value: BigNumber.from(news.total_supply),
     };
 
     this.logger.info(domain, message);
 
     let signMessage = await this.onchainService.signMessage(domain, types, message);
-
-    if (userClaimNews.status !== ClaimStatus.success) {
-      await this.newsService.updateStatusUserClaimNews(user.id, news.id, ClaimStatus.success);
-    }
 
     return {
       r: signMessage.r,
