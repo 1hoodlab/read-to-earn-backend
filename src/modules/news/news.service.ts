@@ -42,10 +42,12 @@ export class NewsService extends BaseService {
   }
 
   findNewsBySlug(slug: string) {
-    return this.prismaService.news.findFirst({
-      where: {
-        slug,
-      },
+    return this.fetchCacheable(`${slug}`, () => {
+      return this.prismaService.news.findFirst({
+        where: {
+          slug,
+        },
+      });
     });
   }
 
