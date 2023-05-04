@@ -3,15 +3,26 @@ import { PrismaModule, PrismaService } from 'nestjs-prisma';
 import { CreateNewsInputDto } from './dto/news.dto';
 import { ClaimStatus, Prisma, news, user } from '@prisma/client';
 import { createPaginator } from 'src/_serivces/pagination.service';
+import { BaseService } from 'src/_serivces/base.service';
 
 @Injectable()
-export class NewsService {
-  constructor(private readonly prismaService: PrismaService) {}
+export class NewsService extends BaseService {
+  constructor(private readonly prismaService: PrismaService) {
+    super();
+  }
 
-  createNews(news: CreateNewsInputDto, minRead: number, author: user) {
+  createNews(news: CreateNewsInputDto, minRead: number, author: user, tokenId: number, totalSupply: string) {
+    console.log(news, tokenId);
     return this.prismaService.news.create({
       data: {
-        ...news,
+        title: news.title,
+        cid: news.cid,
+        content_url: news.content_url,
+        payment_token: news.payment_token,
+        total_supply: totalSupply,
+        slug: news.slug,
+        thumbnail: news.thumbnail,
+        token_id: tokenId,
         min_read: minRead,
         author: {
           connect: {
@@ -31,10 +42,12 @@ export class NewsService {
   }
 
   findNewsBySlug(slug: string) {
-    return this.prismaService.news.findFirst({
-      where: {
-        slug,
-      },
+    return this.fetchCacheable(`${slug}`, () => {
+      return this.prismaService.news.findFirst({
+        where: {
+          slug,
+        },
+      });
     });
   }
 
@@ -92,6 +105,9 @@ export class NewsService {
       where: {
         user_id: user_id,
         status: ClaimStatus.success,
+        token_earned: {
+          not: '0',
+        },
       },
     });
   }
@@ -111,6 +127,31 @@ export class NewsService {
         },
         transaction_id: transaction_id,
         token_earned: '0',
+      },
+    });
+  }
+
+  updateStatusUserClaimNews(user_id: string, news_id: number, status: ClaimStatus) {
+    return this.prismaService.user_claim_news.update({
+      where: {
+        news_id_user_id: {
+          news_id: news_id,
+          user_id: user_id,
+        },
+      },
+      data: {
+        status: status,
+      },
+    });
+  }
+
+  updateTokenEarned(transactionId: string, tokenEarned: string) {
+    return this.prismaService.user_claim_news.update({
+      where: {
+        transaction_id: transactionId,
+      },
+      data: {
+        token_earned: tokenEarned,
       },
     });
   }

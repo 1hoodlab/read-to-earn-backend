@@ -18,7 +18,7 @@ export class NftStorageService {
     return await this.storage.storeBlob(file);
   }
 
-  async getMarkdownFile(cid: string) {
+  async getMarkdownFile(cid: string): Promise<string | undefined> {
     try {
       const status = await this.storage.check(cid);
 
@@ -36,7 +36,8 @@ export class NftStorageService {
 
       return await lastValueFrom(request);
     } catch (error) {
-      return null;
+      this.logger.error(error.response);
+      return undefined;
     }
   }
 }

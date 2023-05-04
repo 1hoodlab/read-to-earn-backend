@@ -1,5 +1,6 @@
 import { CHINESE_KOREAN_READ_TIME, WORDS_PER_MIN } from 'src/constant';
 import crypto from 'crypto';
+import { nanoid } from 'nanoid';
 export function totalWordCount(str: string): number {
   return (str.match(/\w+/g) || []).length;
 }
@@ -39,7 +40,7 @@ export function humanizeTime(time) {
 }
 
 export function generateRandom() {
-  return crypto.randomBytes(10).toString();
+  return nanoid(10);
 }
 
 export function generateSignInMessage(wallet_address: string, nonce: string) {

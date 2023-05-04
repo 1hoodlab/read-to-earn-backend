@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { markdownFilter } from './util';
 import { SingleFileDto } from './dto/index.dto';
@@ -9,10 +9,13 @@ import { CIDString } from 'nft.storage';
 import { HttpService } from '@nestjs/axios';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Public } from 'src/decorators/public.decorator';
+import { Blob } from 'buffer';
 
 @Controller('nft-storage')
 @ApiTags('Nft.Storage')
 export class NftStorageController {
+  private logger = new Logger(NftStorageController.name);
+
   constructor(private readonly nftStorageService: NftStorageService, private readonly httpService: HttpService) {}
 
   @ApiBearerAuth()

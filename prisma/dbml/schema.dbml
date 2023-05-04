@@ -48,7 +48,7 @@ Table news {
   cid String [unique, not null]
   total_supply String
   payment_token Int
-  min_read Int [not null]
+  min_read Float [not null]
   author user [not null]
   author_id String [not null]
   published Boolean [not null, default: true]
@@ -75,7 +75,7 @@ Table user_claim_news {
   news_id Int [not null]
   user user [not null]
   user_id String [not null]
-  transaction_id String [not null]
+  transaction_id String [unique, not null]
   token_earned String [not null]
   status ClaimStatus [not null, default: 'pending']
   created_at DateTime [default: `now()`, not null]

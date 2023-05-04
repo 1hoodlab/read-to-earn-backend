@@ -1,34 +1,34 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { ClaimStatus } from '@prisma/client';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateNewsInputDto {
-  @ApiProperty()
+  @ApiProperty({ default: 'title' })
   @IsString()
   title: string;
 
-  @ApiProperty()
+  @ApiProperty({ default: 'thumbnail' })
   @IsString()
   thumbnail: string;
 
-  @ApiProperty()
+  @ApiProperty({ default: 'content_url' })
   @IsString()
   content_url: string;
 
-  @ApiProperty()
+  @ApiProperty({ default: 'cid' })
   @IsString()
   cid: string;
 
-  @ApiProperty()
+  @ApiProperty({ default: 'txhash' })
   @IsString()
-  total_supply: string;
+  txhash: string;
 
-  @ApiProperty()
-  token_id: number;
-
-  @ApiProperty()
+  @ApiProperty({ default: 'slug' })
+  @IsString()
   slug: string;
 
-  @ApiProperty()
+  @ApiProperty({ default: 1 })
+  @IsNumber()
   payment_token: number;
 }
 
@@ -48,12 +48,28 @@ export class GetNewsAll {
 
 export class ClaimTokenDto {
   @ApiProperty()
+  @IsNumber()
   news_id: number;
 }
 
 export class CreateUserClaimNewsDto {
   @ApiProperty()
+  @IsString()
   slug: string;
+}
+
+export class UpdateStatusUserClaimNewsDto {
+  @ApiProperty()
+  @IsString()
+  slug: string;
+
+  @ApiProperty()
+  @IsString()
+  user_id: string;
+
+  @ApiProperty({ enum: ClaimStatus })
+  @IsString()
+  status: ClaimStatus;
 }
 
 export type ClaimTokenResponseDto = {
@@ -63,4 +79,3 @@ export type ClaimTokenResponseDto = {
   s: string;
   slug: string;
 };
-
