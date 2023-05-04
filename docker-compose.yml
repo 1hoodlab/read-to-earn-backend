@@ -17,9 +17,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - port=${BACKEND_PORT}
     restart: always
     ports:
-      - 8080:8080
+      - ${BACKEND_PORT}:${BACKEND_PORT}
     depends_on:
       - postgres
     env_file:
