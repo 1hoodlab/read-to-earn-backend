@@ -28,7 +28,7 @@ services:
       - .env
     networks:
       - postgres
-      
+
   pg_admin:
     image: dpage/pgadmin4:latest
     container_name: pgadmin_container
@@ -50,6 +50,7 @@ services:
 volumes:
   postgres:
     name: spirity-db
+  pgadmin:
 
 networks:
   postgres:
