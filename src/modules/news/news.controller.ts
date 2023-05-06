@@ -153,8 +153,8 @@ export class NewsController {
     this.logger.info(`verifyingContract: ${this.configService.get<string>('SNEWS_CONTRACT_ADDRESS').toLowerCase()}`);
 
     const domain: TypedDataDomain = {
-      name: 'SNews',
-      version: 'v1.0',
+      name: DATA_DOMAIN_NAME,
+      version: DATA_DOMAIN_VERSION,
       verifyingContract: this.configService.get<string>('SNEWS_CONTRACT_ADDRESS').toLowerCase(),
     };
     const types = {
