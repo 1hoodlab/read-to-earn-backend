@@ -6,6 +6,11 @@ export class SingleFileDto {
   markdown_file: string;
 }
 
+export class SingleFileImageDto {
+  @ApiProperty({ type: 'string', format: 'binary' })
+  file: string;
+}
+
 export class GetContentDto {
   @ApiProperty({ type: 'string' })
   cid: string;

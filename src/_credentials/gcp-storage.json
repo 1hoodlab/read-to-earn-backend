@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "read-to-earn-beta",
+  "private_key_id": "68ef479fa78099d25ade4800679e04196357d73d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCOtlyt1zVxcNuu\nYvqNSQshSx8WWgSM0gFUsRByGmw4zMFXy0wpAhScrZFozmiRw5B0vjtwA+SD6/At\nDRqLd51l5MAehStcur7MzBgWGPPZf4kH+UX/iBBNnZUwc6kyCDPSC+D8B8WOvJO7\n2Gwy6QQZpVItnmNKxNShsZ4nA4uk9CQXEHKqkXGRIrzHuDgJK6nCoIC71oPKPQKM\nu56dG1rFgOTYuZ0oklant1WefdNpQUTW3GttVXgP1n27/20hqz/a8hg+VgsUFQUG\nib8xEdvtxeiFW6kvayQz8q5Mv+b1v5KwsyNxVHCJ/goxw13DR6SqYYj+PfujQvOD\n3KoSarnZAgMBAAECggEAEgXUwX2GuctTavwEAVjCp5M5m1SF85TH5z6vQYG1vhyZ\npDE/7oPdP4Yp8W7zxMjKUvv9PKG5N7HRtJbNjeRuw8H2Q0R1G/JXizyRJCVFkmep\nUhD4dpNj37FxeFt6+B8SEEpAwQNoPyTwkU39KBbGVkjLDojMqFIgOkVYoDux5IRi\nQxO16Poh3Vlas9a5RVHE7AHSovejE9dfpzZuvuaxWbnblG9sbS8+5zz3oN9wsPpS\n86WRwGq8jwr5UZGyXLbkhQ7vuplUAvOXCQpQIfVAlWrvt5+mwO6mtBnuPZOcznil\nPROqcb5H5uW/KXyxnnZhny+ZaVUvaUqe8yZNgoMgIwKBgQDHEh6oKwtaz3ch+TR6\nWR87O+yr4EzoDqtUQrybMmUsb6rvFpbvnMEfTSG3RCHkBW4Olie4hVHpcc63aHKd\n4FsX65hCs8oW0Tcg4ZboxDKoh6n0lL3CCtCGyERgfKhbe4ulNnaFIJmrQ0q9V8Mq\n8sQsNyYfpQEYItRh3M0EWCZu2wKBgQC3hkSEJ8V4p091tuqlFK5g9FRju+7f94+n\nrsBFbbq0YIgNClAO0hZIRgjq9Vobs3jFolLCV12dAcwRGcFNMXf09le40hqK2vdw\nyIgW7GNl+y4mzdLUXYUVMWMpf+xqTSNPrSbvZ1VIG8toto7xCPZoRWqf5b0a+iD0\nq24XEHeWWwKBgAz2Dg7u9odMGLqaiiMpKFJn/WnXacp2IguTaMpGBrZU8vEsLFmf\ngCd0kyxmgDpjbB4BAscNzx5+7XGdmFDVKbkt+rTlFdRUfN1kMronBBFa++LTyGMY\n5yjPYzxRAXkrWxU/rYnPbJHtCLG5RBjIw6MJWC8ZRC/5HJDemm6c+qufAoGAAq7F\nxaDHNDJN6QyZdXxN6EDqEuMmZMO7p9nYGau29PgMRRSHgw/zH29WpgicHpeLBmiP\nCSQ5zBfAoedcegJlHIGVWrBHjwwQXeewhZVDBrSbQhn0IQKU9XBZYLvr+snR4FJJ\npWo/RuSRHqC8ii11XKTXICs9jm1lme3/l/q3pM0CgYBw2FNcjTDl3BJ6akioEvkW\nylIy1bk5Axo1DZsLmOiagoYGrsr8TiMhpC5hXBVYjduEZG4oIwgvOS5tHUMyczB4\nGQpcdCa2cFODSvocZ6VqlJxnilKuIVPIzdF2Hhyqwdw6Vx1Jfswza9o8H/Ox7DuG\nbMiQRDfkmsXm7SHGw8zyeA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "upload-file-to-google-storage@read-to-earn-beta.iam.gserviceaccount.com",
+  "client_id": "114743304514744084712",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/upload-file-to-google-storage%40read-to-earn-beta.iam.gserviceaccount.com"
+}

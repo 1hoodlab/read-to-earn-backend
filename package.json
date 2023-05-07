@@ -43,6 +43,7 @@
     "@fastify/cors": "^8.2.0",
     "@fastify/static": "^6.8.0",
     "@fastify/view": "^7.4.1",
+    "@google-cloud/storage": "^6.10.0",
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/axios": "^2.0.0",
     "@nestjs/bull": "^0.6.2",
@@ -88,7 +89,8 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "socket.io": "^4.5.4",
-    "swagger-ui-express": "^4.6.0"
+    "swagger-ui-express": "^4.6.0",
+    "urlcat": "^3.1.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

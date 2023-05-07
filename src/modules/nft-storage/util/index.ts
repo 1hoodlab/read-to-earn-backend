@@ -1,11 +1,7 @@
 import { Request } from 'express';
 import { extname } from 'path';
 
-export const editFileName = (
-  req: Request,
-  file: Express.Multer.File,
-  callback
-) => {
+export const editFileName = (req: Request, file: Express.Multer.File, callback) => {
   const name = file.originalname.split('.')[0];
   const fileExtName = extname(file.originalname);
   const randomName = Array(4)
@@ -15,12 +11,14 @@ export const editFileName = (
   callback(null, `${name}-${randomName}${fileExtName}`);
 };
 
-export const markdownFilter = (
-  req: Request,
-  file: Express.Multer.File,
-  callback
-) => {
+export const markdownFilter = (req: Request, file: Express.Multer.File, callback) => {
   if (!file.originalname.match(/\.(md|mdx)$/)) {
+    return callback(new Error('Only markdown files are allowed!'), false);
+  }
+  callback(null, true);
+};
+export const imageFilter = (req: Request, file: Express.Multer.File, callback) => {
+  if (!file.originalname.match(/\.(jpeg|png|jpg|svg)$/)) {
     return callback(new Error('Only markdown files are allowed!'), false);
   }
   callback(null, true);

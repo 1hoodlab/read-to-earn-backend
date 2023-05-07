@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Headers, HttpException, HttpStatus, Param, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ClaimStatus, Role, news, user } from '@prisma/client';
 import { BigNumber, TypedDataDomain, ethers } from 'ethers';
 import { PaginatedResult } from 'src/_serivces/pagination.service';
@@ -22,11 +22,21 @@ import { NewsService } from './news.service';
 import { ConfigService } from '@nestjs/config';
 import { DATA_DOMAIN_NAME, DATA_DOMAIN_VERSION, Event } from 'src/constant';
 import { Logger, Result } from 'ethers/lib/utils';
+import { Storage } from '@google-cloud/storage';
+import { FastifyFileInterceptor } from 'src/interceptor/fastify-file-interceptor';
+import { UPLOAD_FIELD } from '../nft-storage/constants';
+import { imageFilter } from '../nft-storage/util';
+import { SingleFileImageDto } from '../nft-storage/dto/index.dto';
+import { join } from 'path';
+import { nanoid } from 'nanoid';
+import urlcat from 'urlcat';
 
 // reference: https://restfulapi.net/resource-naming/
 @Controller('news')
 @ApiTags('News')
 export class NewsController {
+  private storage: Storage;
+
   private logger = new Logger(NewsController.name);
   constructor(
     private readonly newsService: NewsService,
@@ -34,7 +44,36 @@ export class NewsController {
     private readonly onchainService: OnchainService,
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    this.storage = new Storage({
+      keyFilename: join(process.cwd(), 'src/_credentials/gcp-storage.json'),
+    });
+  }
+
+  @ApiBearerAuth()
+  @Roles(['root', 'writer'])
+  @Post('upload/banner')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FastifyFileInterceptor('file', {
+      fileFilter: imageFilter,
+    }),
+  )
+  async uploadBanner(@UploadedFile() file: Express.Multer.File, @Body() body: SingleFileImageDto) {
+    try {
+      const bucketName = this.configService.get<string>('BUCKET_NAME');
+      const bucket = this.storage.bucket(bucketName);
+      const filename = nanoid() + '_' + file.originalname;
+
+      await bucket.file(filename).save(file.buffer);
+      const publicUrl = urlcat('https://storage.googleapis.com/', '/spirity/:filename', { filename: filename });
+      return {
+        publicUrl: publicUrl,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   @ApiBearerAuth()
   @Post('managed-news')

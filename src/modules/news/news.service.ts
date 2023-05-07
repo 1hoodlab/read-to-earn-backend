@@ -4,10 +4,11 @@ import { CreateNewsInputDto } from './dto/news.dto';
 import { ClaimStatus, Prisma, news, user } from '@prisma/client';
 import { createPaginator } from 'src/_serivces/pagination.service';
 import { BaseService } from 'src/_serivces/base.service';
-
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class NewsService extends BaseService {
-  constructor(private readonly prismaService: PrismaService) {
+
+  constructor(private readonly prismaService: PrismaService, private readonly configService: ConfigService) {
     super();
   }
 
