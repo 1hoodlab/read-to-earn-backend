@@ -21,8 +21,8 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/.env ./
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/_credentials ./_credentials
 
+COPY _credentials/gcp-storage.json /etc/secrets/private/
 
 EXPOSE ${port}
 CMD [ "npm", "run", "start:migrate:prod" ]

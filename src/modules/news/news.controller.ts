@@ -46,7 +46,7 @@ export class NewsController {
     private readonly configService: ConfigService,
   ) {
     this.storage = new Storage({
-      keyFilename: '../../../_credentials/gcp-storage.json',
+      keyFilename: this.configService.get<string>('GCP_STORAGE_CREDENTIAL'),
     });
   }
 
