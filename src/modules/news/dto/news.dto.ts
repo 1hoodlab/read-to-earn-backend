@@ -27,11 +27,11 @@ export class CreateNewsInputDto {
   @IsString()
   slug: string;
 
-  @ApiProperty({ default: 'slug' })
+  @ApiProperty({ default: 'short_description' })
   @IsString()
   short_description: string;
 
-  @ApiProperty({ default: 'slug' })
+  @ApiProperty({ default: 'short_content' })
   @IsString()
   short_content: string;
 

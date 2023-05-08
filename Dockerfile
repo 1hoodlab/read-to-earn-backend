@@ -9,9 +9,10 @@ COPY prisma ./prisma/
 
 # Install app dependencies
 RUN npm install
-RUN npm run prisma:generate
 
 COPY . .
+
+RUN npm run prisma:generate
 
 RUN npm run build
 
