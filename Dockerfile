@@ -12,8 +12,6 @@ RUN npm install
 
 COPY . .
 
-RUN npm run prisma:generate
-
 RUN npm run build
 
 FROM node:18.16.0-alpine
