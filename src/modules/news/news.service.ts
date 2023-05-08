@@ -12,7 +12,6 @@ export class NewsService extends BaseService {
   }
 
   createNews(news: CreateNewsInputDto, minRead: number, author: user, tokenId: number, totalSupply: string) {
-    console.log(news, tokenId);
     return this.prismaService.news.create({
       data: {
         short_description: news.short_description,
