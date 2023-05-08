@@ -47,6 +47,8 @@ Table news {
   content_url String [not null]
   cid String [unique, not null]
   total_supply String
+  short_description String
+  short_content String
   payment_token Int
   min_read Float [not null]
   author user [not null]

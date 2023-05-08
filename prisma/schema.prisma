@@ -61,6 +61,8 @@ model news {
     content_url        String // cid + nft.storage url
     cid                String               @unique
     total_supply       String?
+    short_description  String?
+    short_content      String?
     payment_token      Int?
     min_read           Float //  seconds
     author             user                 @relation(fields: [author_id], references: [id])

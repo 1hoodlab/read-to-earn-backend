@@ -27,6 +27,15 @@ export class CreateNewsInputDto {
   @IsString()
   slug: string;
 
+  @ApiProperty({ default: 'slug' })
+  @IsString()
+  short_description: string;
+
+  @ApiProperty({ default: 'slug' })
+  @IsString()
+  short_content: string;
+
+
   @ApiProperty({ default: 1 })
   @IsNumber()
   payment_token: number;

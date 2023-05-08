@@ -7,7 +7,6 @@ import { BaseService } from 'src/_serivces/base.service';
 import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class NewsService extends BaseService {
-
   constructor(private readonly prismaService: PrismaService, private readonly configService: ConfigService) {
     super();
   }
@@ -16,6 +15,8 @@ export class NewsService extends BaseService {
     console.log(news, tokenId);
     return this.prismaService.news.create({
       data: {
+        short_description: news.short_description,
+        short_content: news.short_content,
         title: news.title,
         cid: news.cid,
         content_url: news.content_url,
