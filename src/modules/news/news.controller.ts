@@ -93,6 +93,7 @@ export class NewsController {
 
     this.logger.info(content, tokenId, ownerAddress, slug, totalSupply, paymentToken);
 
+    this.logger.info(news)
     return await this.newsService.createNews(news, wordsReadTime(content).wordTime, user, tokenId.toNumber(), totalSupply.toString());
   }
   @Public()
