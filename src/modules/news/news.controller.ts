@@ -116,47 +116,47 @@ export class NewsController {
   // BE của nextJS có nhiệm vụ tracking việc đọc của người dùng nếu hoàn thành nhiệm vụ thì gọi create-claim
   // nên gửi user token trong thẻ header: x-user-token
 
-  @ApiBearerAuth()
-  @Post('managed-claim')
-  @Roles([Role.root])
-  async createUserClaimNews(@Headers('x-reader-token') readerToken: string, @Body() body: CreateUserClaimNewsDto) {
-    if (!readerToken) throw new HttpException("Please add 'x-reader-token' to header", HttpStatus.BAD_REQUEST);
+  // @ApiBearerAuth()
+  // @Post('managed-claim')
+  // @Roles([Role.root])
+  // async createUserClaimNews(@Headers('x-reader-token') readerToken: string, @Body() body: CreateUserClaimNewsDto) {
+  //   if (!readerToken) throw new HttpException("Please add 'x-reader-token' to header", HttpStatus.BAD_REQUEST);
 
-    const user = await this.authService.getUserFromToken(readerToken);
-    const news = await this.newsService.findNewsBySlug(body.slug);
+  //   const user = await this.authService.getUserFromToken(readerToken);
+  //   const news = await this.newsService.findNewsBySlug(body.slug);
 
-    console.log(user.id, news.id);
-    const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, news.id);
+  //   console.log(user.id, news.id);
+  //   const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, news.id);
 
-    console.log(userClaimNews);
-    if (userClaimNews) return userClaimNews;
+  //   console.log(userClaimNews);
+  //   if (userClaimNews) return userClaimNews;
 
-    const transactionId = `transaction#${user.id}_${news.id}_${generateRandom()}`;
-    return await this.newsService.createUserClaimNews(transactionId, user.id, news.id);
-  }
+  //   const transactionId = `transaction#${user.id}_${news.id}_${generateRandom()}`;
+  //   return await this.newsService.createUserClaimNews(transactionId, user.id, news.id);
+  // }
 
-  @ApiBearerAuth()
-  @Put('managed-claim/status')
-  @Roles([Role.root])
-  async updateStatusUserClaimNews(@Headers('x-reader-token') readerToken: string, @Body() body: UpdateStatusUserClaimNewsDto): Promise<any> {
-    if (!readerToken) throw new HttpException("Please add 'x-reader-token' to header", HttpStatus.BAD_REQUEST);
+  // @ApiBearerAuth()
+  // @Put('managed-claim/status')
+  // @Roles([Role.root])
+  // async updateStatusUserClaimNews(@Headers('x-reader-token') readerToken: string, @Body() body: UpdateStatusUserClaimNewsDto): Promise<any> {
+  //   if (!readerToken) throw new HttpException("Please add 'x-reader-token' to header", HttpStatus.BAD_REQUEST);
 
-    const user = await this.authService.getUserFromToken(readerToken);
-    const news = await this.newsService.findNewsBySlug(body.slug);
+  //   const user = await this.authService.getUserFromToken(readerToken);
+  //   const news = await this.newsService.findNewsBySlug(body.slug);
 
-    this.logger.info(body.slug, news.id, user.id);
+  //   this.logger.info(body.slug, news.id, user.id);
 
-    const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, news.id);
-    if (!userClaimNews) throw new HttpException('User Claim News not found!', HttpStatus.BAD_REQUEST);
+  //   const userClaimNews = await this.newsService.findUserClaimNewsById(user.id, news.id);
+  //   if (!userClaimNews) throw new HttpException('User Claim News not found!', HttpStatus.BAD_REQUEST);
 
-    console.log(userClaimNews);
+  //   console.log(userClaimNews);
 
-    if (userClaimNews.status !== ClaimStatus.pending) throw new HttpException('update status dont have turn!', HttpStatus.BAD_REQUEST);
+  //   if (userClaimNews.status !== ClaimStatus.pending) throw new HttpException('update status dont have turn!', HttpStatus.BAD_REQUEST);
 
-    this.logger.info(user.id, news.id, body.status);
+  //   this.logger.info(user.id, news.id, body.status);
 
-    return await this.newsService.updateStatusUserClaimNews(user.id, news.id, body.status);
-  }
+  //   return await this.newsService.updateStatusUserClaimNews(user.id, news.id, body.status);
+  // }
 
   @ApiBearerAuth()
   @Get('claims')

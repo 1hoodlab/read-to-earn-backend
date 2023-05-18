@@ -14,6 +14,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './modules/auth/guards/role.guard';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { OnchainModule } from './modules/onchain/onchain.module';
+import { EventsModule } from './modules/events/events.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { OnchainModule } from './modules/onchain/onchain.module';
     NftStorageModule,
     NewsModule,
     OnchainModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [

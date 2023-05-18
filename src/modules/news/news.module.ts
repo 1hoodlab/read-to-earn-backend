@@ -10,6 +10,7 @@ import { AuthModule } from '../auth/auth.module';
 @Module({
   imports: [NftStorageModule, OnchainModule, AuthModule],
   providers: [NewsService],
+  exports: [NewsService],
   controllers: [NewsController],
 })
 export class NewsModule {}

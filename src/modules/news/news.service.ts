@@ -1,13 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaModule, PrismaService } from 'nestjs-prisma';
 import { CreateNewsInputDto } from './dto/news.dto';
 import { ClaimStatus, Prisma, news, user } from '@prisma/client';
 import { createPaginator } from 'src/_serivces/pagination.service';
 import { BaseService } from 'src/_serivces/base.service';
 import { ConfigService } from '@nestjs/config';
+import { AuthService } from '../auth/services/auth.service';
+import { generateRandom } from 'src/_serivces/util.service';
 @Injectable()
 export class NewsService extends BaseService {
-  constructor(private readonly prismaService: PrismaService, private readonly configService: ConfigService) {
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly configService: ConfigService,
+    private readonly authService: AuthService,
+  ) {
     super();
   }
 
@@ -113,31 +119,49 @@ export class NewsService extends BaseService {
     });
   }
 
-  createUserClaimNews(transaction_id: string, user_id: string, news_id: number) {
+  async createUserClaimNews(readerToken: string, slug: string) {
+    const user = await this.authService.getUserFromToken(readerToken);
+    const news = await this.findNewsBySlug(slug);
+
+    const userClaimNews = await this.findUserClaimNewsById(user.id, news.id);
+
+    if (userClaimNews) return userClaimNews;
+
+    const transactionId = `transaction#${user.id}_${news.id}_${generateRandom()}`;
+
     return this.prismaService.user_claim_news.create({
       data: {
         news: {
           connect: {
-            id: news_id,
+            id: news.id,
           },
         },
         user: {
           connect: {
-            id: user_id,
+            id: user.id,
           },
         },
-        transaction_id: transaction_id,
+        transaction_id: transactionId,
         token_earned: '0',
       },
     });
   }
 
-  updateStatusUserClaimNews(user_id: string, news_id: number, status: ClaimStatus) {
+  async updateStatusUserClaimNews(readerToken: string, slug: string, status: ClaimStatus) {
+    const user = await this.authService.getUserFromToken(readerToken);
+    const news = await this.findNewsBySlug(slug);
+
+    const userClaimNews = await this.findUserClaimNewsById(user.id, news.id);
+
+    if (!userClaimNews) throw new Error('User Claim News not found!');
+
+    if (userClaimNews.status !== ClaimStatus.pending) throw new Error('update status dont have turn!');
+
     return this.prismaService.user_claim_news.update({
       where: {
         news_id_user_id: {
-          news_id: news_id,
-          user_id: user_id,
+          news_id: news.id,
+          user_id: user.id,
         },
       },
       data: {
