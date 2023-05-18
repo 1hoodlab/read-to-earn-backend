@@ -153,12 +153,12 @@ export class TrackingGateway {
     try {
       const statusUserClaimNews = await this.newsService.updateStatusUserClaimNews(readerInfo.reader_token, readerInfo.slug, claimStatus);
 
-      client.emit('RESULT', { data: statusUserClaimNews, status: claimStatus });
+      client.emit('RESULT', { data: statusUserClaimNews, status: claimStatus, message: `Claim news ${claimStatus}` });
     } catch (error) {
       if (error instanceof Error) {
-        client.emit('RESULT', { error: error.message });
+        client.emit('RESULT', { message: error.message, status: ClaimStatus.failure });
       } else {
-        client.emit('RESULT', { error: 'BAD REQUEST' });
+        client.emit('RESULT', { message: 'BAD REQUEST', status: ClaimStatus.failure });
       }
     }
   }
