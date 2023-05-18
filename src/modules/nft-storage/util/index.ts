@@ -18,7 +18,7 @@ export const markdownFilter = (req: Request, file: Express.Multer.File, callback
   callback(null, true);
 };
 export const imageFilter = (req: Request, file: Express.Multer.File, callback) => {
-  if (!file.originalname.match(/\.(jpeg|png|jpg|svg)$/)) {
+  if (!file.originalname.match(/\.(jpeg|png|jpg|svg|webp)$/)) {
     return callback(new Error('Only markdown files are allowed!'), false);
   }
   callback(null, true);
