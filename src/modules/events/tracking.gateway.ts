@@ -153,7 +153,7 @@ export class TrackingGateway {
     try {
       const statusUserClaimNews = await this.newsService.updateStatusUserClaimNews(readerInfo.reader_token, readerInfo.slug, claimStatus);
 
-      client.emit('RESULT', { data: statusUserClaimNews, status: claimStatus, message: `Claim news ${claimStatus}` });
+      client.emit('RESULT', { data: statusUserClaimNews, status: claimStatus, message: `Claim news ${claimStatus}`, readerInfo });
     } catch (error) {
       if (error instanceof Error) {
         client.emit('RESULT', { message: error.message, status: ClaimStatus.failure });
